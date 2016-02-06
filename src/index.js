@@ -58,6 +58,7 @@ priv.referenceObject = function(el) {
     opts.width = el.getAttribute('data-yt-width') ? el.getAttribute('data-yt-width') : 640;
     opts.height = el.getAttribute('data-yt-height') ? el.getAttribute('data-yt-height') : 390;
     opts.playerVars = el.getAttribute('data-yt-vars') ? el.getAttribute('data-yt-vars') : null;
+    opts.title = el.getAttribute('data-yt-title') ? el.getAttribute('data-yt-title') : opts.videoId;
     opts.events = priv.setupEvents();
     priv.videos[opts.videoId] = { opts: opts, el: el, events: {} };
     priv.queue.push(priv.videos[opts.videoId]);
@@ -81,7 +82,7 @@ priv.setupEvents = function() {
 
 // default ready state event
 priv.events.ready = function(e) {
-  console.log('%s:ready', e.target._id);
+  // console.log('%s:ready', e.target._id);
   if (priv.videos[e.target._id].events.ready) {
     var events = priv.videos[e.target._id].events.ready;
     return events.forEach(function(event) {
@@ -104,11 +105,12 @@ priv.events.stateChange = function(e) {
   } else if (e.data === YT.PlayerState.PLAYING) {
     state = 'playing';
   }
-  console.log('%s:%s', e.target._id, state);
+  // console.log('%s:%s', e.target._id, state);
   if (priv.videos[e.target._id].events.stateChange) {
     var events = priv.videos[e.target._id].events.stateChange;
+    var player = priv.videos[e.target._id].player;
     events.forEach(function(event) {
-      return event(state, e);   
+      return event({state: state, ts: player.getCurrentTime(), dur: player.getDuration()}, e);   
     });
   }
 };
@@ -120,13 +122,14 @@ priv.events.error = function(e) {
   } else if (e.data == 5) {
     state = 'html5 player error';
   } else if (e.data == 101 || e.data == 150) {
-    state = 'forbidden embedding';
+    state = 'embedding forbidden';
   }
-  console.log('error:%s:%d:%s', e.target._id, e.data, state);
+  // console.log('error:%s:%d:%s', e.target._id, e.data, state);
   if (priv.videos[e.target._id].events.error) {
     var events = priv.videos[e.target._id].events.error;
+    var player = priv.videos[e.target._id].player;
     events.forEach(function(event) {
-      return event(state, e);   
+      return event({state: state, ts: player.getCurrentTime(), dur: player.getDuration()}, e);   
     });
   }
 };

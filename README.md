@@ -6,7 +6,7 @@ Uses browserify, so `npm i`, no dependencies, other than IE9+ish, go nuts.
 ### Usage
 ```html
   <script src="pathof.js"></script>
-  <div data-yt-analytics="eWxGdmLU4Nk" data-yt-height="400" data-yt-width="600"></div>
+  <div data-yt-analytics="eWxGdmLU4Nk" data-yt-height="400" data-yt-width="600" data-yt-title="tracking name...?"></div>
 ```
 
 ### API
