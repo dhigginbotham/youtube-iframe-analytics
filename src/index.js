@@ -121,7 +121,11 @@ priv.events.stateChange = function(e) {
     var events = priv.videos[e.target._id].events.stateChange;
     var player = priv.videos[e.target._id].player;
     events.forEach(function(event) {
-      return event({state: state, ts: player.getCurrentTime(), dur: player.getDuration()}, e);   
+      return event({
+        state: state, 
+        currentTime: player.getCurrentTime(), 
+        duration: player.getDuration(), 
+        ms: new Date().getTime()}, e);   
     });
   }
 };
@@ -129,7 +133,7 @@ priv.events.stateChange = function(e) {
 priv.events.error = function(e) {
   var state = 'invalid videoId';
   if (e.data == 2 || e.data == 100) {
-    // basically nothing, as it's these are defaults
+    // basically nothing, as these are defaults
   } else if (e.data == 5) {
     state = 'html5 player error';
   } else if (e.data == 101 || e.data == 150) {
@@ -140,7 +144,11 @@ priv.events.error = function(e) {
     var events = priv.videos[e.target._id].events.error;
     var player = priv.videos[e.target._id].player;
     events.forEach(function(event) {
-      return event({state: state, ts: player.getCurrentTime(), dur: player.getDuration()}, e);   
+      return event({
+        state: state, 
+        currentTime: player.getCurrentTime(), 
+        duration: player.getDuration(), 
+        ms: new Date().getTime()}, e);   
     });
   }
 };
