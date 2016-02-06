@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>YouTube IFRAME Analytics</title>
+  </head>
+  <body>
+    <div data-yt-analytics="M7lc1UVf-VE"></div>
+    <div data-yt-analytics="4k5FvIZ6prc"></div>
+    <script src="../build/index.js"></script>
+    <script>
+      function init() {
+        videoAnalytics.on('ready', 'eWxGdmLU4Nk', function(e) {
+          console.log(e);
+          console.log('ready state');
+        });
+        videoAnalytics.on('stateChange', 'eWxGdmLU4Nk', function(e) {
+          console.log(e);
+          console.log('state change');
+        });
+      }
+      document.addEventListener('DOMContentLoaded', init, false);
+    </script>
+  </body>
+</html>
