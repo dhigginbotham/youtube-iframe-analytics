@@ -1,5 +1,8 @@
-var pub = {};
-var priv = {};
+var helpers = require('./helpers');
+var attr = helpers.attr;
+
+// api objects
+var pub = {}, priv = {};
 
 // we want to keep context of our dom, so we can easily ref
 // the nodes later on
@@ -24,8 +27,10 @@ pub.init = function() {
 
 // public on event, so you can externally attach to videos
 pub.on = function(event, id, fn) {
-  if (!(priv.videos[id].events[event] instanceof Array)) priv.videos[id].events[event] = [];
-  priv.videos[id].events[event].push(fn);
+  if (priv.videos[id]) {
+    if (!(priv.videos[id].events[event] instanceof Array)) priv.videos[id].events[event] = [];
+    priv.videos[id].events[event].push(fn);
+  }
   return pub;
 };
 
@@ -52,17 +57,23 @@ priv.collectDom = function() {
 // sets up our dom object, so we have a strict schema to 
 // adhere to later on in the api 
 priv.referenceObject = function(el) {
-  var opts = {};
-  opts.videoId = el.getAttribute('data-yt-analytics') ? el.getAttribute('data-yt-analytics') : null;
-  if (opts.videoId && el.getAttribute('data-yt-tracked') == null) {
-    opts.width = el.getAttribute('data-yt-width') ? el.getAttribute('data-yt-width') : 640;
-    opts.height = el.getAttribute('data-yt-height') ? el.getAttribute('data-yt-height') : 390;
-    opts.playerVars = el.getAttribute('data-yt-vars') ? el.getAttribute('data-yt-vars') : null;
-    opts.title = el.getAttribute('data-yt-title') ? el.getAttribute('data-yt-title') : opts.videoId;
+  var opts = {}, attrs = attr(el);
+  opts.videoId = attrs('data-yt-analytics') ? attrs('data-yt-analytics') : null;
+  if (opts.videoId && attrs('data-yt-tracked') == null) {
+    attrs('data-yt-tracked', true);
+
+    // get opts from data attrs
+    opts.width = attrs('data-yt-width') ? attrs('data-yt-width') : 640;
+    opts.height = attrs('data-yt-height') ? attrs('data-yt-height') : 390;
+    opts.playerVars = attrs('data-yt-vars') ? attrs('data-yt-vars') : null;
+    opts.title = attrs('data-yt-title') ? attrs('data-yt-title') : opts.videoId;
+    
+    // setup base events
     opts.events = priv.setupEvents();
+    
+    // build video object to store
     priv.videos[opts.videoId] = { opts: opts, el: el, events: {} };
     priv.queue.push(priv.videos[opts.videoId]);
-    el.setAttribute('data-yt-tracked', true);
   }
 };
 
@@ -137,23 +148,23 @@ priv.events.error = function(e) {
 // we include youtubes js script async, and we'll need to 
 // keep track of the state of that include
 priv.injectScripts = function(fn) {
-  if (!priv.videos.scriptInclude) {
+  if (!priv.scriptInclude) {
     // we only want to do this once, and this is the best
     // time to do this once, this also keeps all of the
     // conditional stuff to a single entry, so it works
     window['onYouTubeIframeAPIReady'] = pub.attachVideos;
 
     var placement = document.getElementsByTagName('script')[0];
-    priv.videos.scriptInclude = document.createElement('script');
+    priv.scriptInclude = document.createElement('script');
     
     // if fn, lets treat async, otherwise we'll be blocking
     if (typeof fn == 'function') {
-      priv.videos.scriptInclude.setAttribute('async', true);
-      priv.videos.scriptInclude.addEventListener('load', fn, false);
+      priv.scriptInclude.setAttribute('async', true);
+      priv.scriptInclude.addEventListener('load', fn, false);
     }
 
-    priv.videos.scriptInclude.setAttribute('src', '//www.youtube.com/iframe_api');
-    placement.parentNode.insertBefore(priv.videos.scriptInclude, placement);
+    priv.scriptInclude.setAttribute('src', '//www.youtube.com/iframe_api');
+    placement.parentNode.insertBefore(priv.scriptInclude, placement);
   }
 };
   
