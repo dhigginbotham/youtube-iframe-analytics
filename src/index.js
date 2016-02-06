@@ -71,6 +71,7 @@ priv.setupEvents = function() {
   var events = {};
   events.onReady = priv.events.ready;
   events.onStateChange = priv.events.stateChange;
+  events.onError = priv.events.error;
   return events;
 };
 
@@ -108,6 +109,24 @@ priv.events.stateChange = function(e) {
     var events = priv.videos[e.target._id].events.stateChange;
     events.forEach(function(event) {
       return event(state, e);   
+    });
+  }
+};
+
+priv.events.error = function(e) {
+  var state = 'invalid videoId';
+  if (e.data == 2 || e.data == 100) {
+    // basically nothing, as it's these are defaults
+  } else if (e.data == 5) {
+    state = 'html5 player error';
+  } else if (e.data == 101 || e.data == 150) {
+    state = 'forbidden embedding';
+  }
+  console.log('%s is an error of %d (%s)', e.target._id, e.data, state);
+  if (priv.videos[e.target._id].events.error) {
+    var events = priv.videos[e.target._id].events.error;
+    events.forEach(function(event) {
+      return event(e);   
     });
   }
 };
