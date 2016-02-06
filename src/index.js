@@ -81,7 +81,7 @@ priv.setupEvents = function() {
 
 // default ready state event
 priv.events.ready = function(e) {
-  console.log('%s is ready', e.target._id);
+  console.log('%s:ready', e.target._id);
   if (priv.videos[e.target._id].events.ready) {
     var events = priv.videos[e.target._id].events.ready;
     return events.forEach(function(event) {
@@ -104,7 +104,7 @@ priv.events.stateChange = function(e) {
   } else if (e.data === YT.PlayerState.PLAYING) {
     state = 'playing';
   }
-  console.log('%s is %s', e.target._id, state);
+  console.log('%s:%s', e.target._id, state);
   if (priv.videos[e.target._id].events.stateChange) {
     var events = priv.videos[e.target._id].events.stateChange;
     events.forEach(function(event) {
@@ -122,11 +122,11 @@ priv.events.error = function(e) {
   } else if (e.data == 101 || e.data == 150) {
     state = 'forbidden embedding';
   }
-  console.log('%s is an error of %d (%s)', e.target._id, e.data, state);
+  console.log('error:%s:%d:%s', e.target._id, e.data, state);
   if (priv.videos[e.target._id].events.error) {
     var events = priv.videos[e.target._id].events.error;
     events.forEach(function(event) {
-      return event(e);   
+      return event(state, e);   
     });
   }
 };
