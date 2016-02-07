@@ -248,11 +248,9 @@ videoAnalytics.setDebug = function(bool) {
   bool = typeof bool != 'undefined' ? bool : null;
   if (elem) {
     var attrs = attr(elem);
-    videoAnalytics.debug = bool ? bool : attrs('data-yt-debug') == 'true';
+    videoAnalytics.debug = attrs('data-yt-debug') == 'true';
   }
-  if (bool !== null) {
-    videoAnalytics.debug = bool;
-  }
+  if (bool !== null) videoAnalytics.debug = bool;
   mon.debug = videoAnalytics.debug;
   videoAnalytics.logs = videoAnalytics.debug ? mon.history : [];
   return videoAnalytics;
