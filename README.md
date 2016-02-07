@@ -96,6 +96,7 @@ All events are passed with **two** parameters:
 <script src="pathof.js"></script>
 <div data-yt-analytics="eWxGdmLU4Nk" data-yt-height="400" data-yt-width="600" data-yt-title="tracking name...?"></div>
 ```
+
 ######Markup Options:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
@@ -106,18 +107,16 @@ All events are passed with **two** parameters:
 | `[data-yt-vars]` | `JSON` | **false** | [Video player](https://developers.google.com/youtube/player_parameters?playerVersion=HTML5#Parameters) vars *(query params)* to pass to YouTube |
 | `[data-yt-width]` | `Number` | **false** | `<iframe>` width, defaults to `640` |
 
+
 #####JavaScript:
 ```js
+// attaches events to ready, stateChange, and error for 
+// every video loaded on the page, gg
 function init() {
-  videoAnalytics.on('ready', '*', function(e, state) {
-    console.log(e, state);
-  }).on('stateChange', '*', function(e, state) {
-    console.log(e, state);
-  }).on('error', '*', function(e, state) {
-    console.log(e, state);
+  videoAnalytics.on(['ready','stateChange','error'], '*', function(e,state) {
+    console.log(e,state);
   });
 }
-
 document.addEventListener('DOMContentLoaded', init, false);
 ```
 
