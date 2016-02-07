@@ -225,19 +225,19 @@ priv.events.stateChange = function(e) {
 // try to avoid extremely large arrays, or doing async stuff
 // inside of your events without the proper safety materials
 videoAnalytics.on = function(events, id, fn) {
-  var recurse = false, event = events;
+  var recurse = false, ev = events;
   if (events instanceof Array) {
-    recurse = events.length ? true : false;
-    event = events.shift();
+    recurse = events.length > 0;
+    ev = events.shift();
   }
   // `*` wildcard allows you to attach an event to every vid
   if (id === '*') {
     var vids = Object.keys(priv.videos);
     for(var i=0;i<vids.length;++i) {
-      priv.attachEvents(vids[i],event,fn);
+      priv.attachEvents(vids[i],ev,fn);
     }
   } else {
-    priv.attachEvents(id,event,fn);
+    priv.attachEvents(id,ev,fn);
   }
   if (recurse) return videoAnalytics.on(events,id,fn);
   return videoAnalytics;
