@@ -7,6 +7,7 @@ Uses browserify, so `npm i`, no jquery, expects you're on a *modernish* browser 
 
 ### API
 - `.on('event','videoId',fn)` - you can pass in `*` as the `videoId` to attach an event to all videos
+  
   ```js
   // attach a stateChange event to a specific video
   videoAnalytics.on('stateChange', 'M7lc1UVf-VE', function(e, state) {
@@ -19,6 +20,7 @@ Uses browserify, so `npm i`, no jquery, expects you're on a *modernish* browser 
   });
   ```
 - `.track()` - you can trigger dom collection and initialization for latent loaded dom elements or binding changes, etc
+  
   ```js
   videoAnalytics.track();
   ```
