@@ -168,7 +168,6 @@ priv.referenceObject = function(el) {
 // videos, we always fire these internally, but then we 
 // also allow you to attach events to a video, by its id
 // --------------------------------------------------------
-//
 
 priv.events.apiChange = function(e) {
   priv.processEvents('apiChange', e.target._id, 'apiChange', e);

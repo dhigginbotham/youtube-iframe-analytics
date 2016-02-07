@@ -36,7 +36,7 @@
         } else {
           el.appendChild(pre);
         }
-        el.scrollTop = 0;
+        if (el.scrollTop) el.scrollTop = 0;
       }
 
       function init() {
