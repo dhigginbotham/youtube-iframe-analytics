@@ -12,7 +12,7 @@ Uses browserify, so `npm i`, no jquery, expects you're on a modernish browser (I
 ----
 
 ### Events
-You can find out more about why/when these fire [here](https://developers.google.com/youtube/iframe_api_reference#Events)
+You can find out more about why/when these fire [`here`](https://developers.google.com/youtube/iframe_api_reference#Events)
 - `apiChange`
 - `error`
 - `playbackRateChange`
@@ -20,7 +20,7 @@ You can find out more about why/when these fire [here](https://developers.google
 - `ready`
 - `stateChange`
 
-All events are passed with two parameters:
+All events are passed with **two** parameters:
 - `event` - is the event object passed from the youtube event, it will remain **unmodified**
 - `state` - is an internally built object to use for tracking/analytics/debugging for example:
 ```json
@@ -47,14 +47,14 @@ All events are passed with two parameters:
 ----
 
 ### Usage
-Here's a link to or [fiddle](https://fiddle.jshell.net/dhiggy/egas87om/show/).
+Here's a link to or [**fiddle**](https://fiddle.jshell.net/dhiggy/egas87om/show/).
 
-Markup:
+#####Markup:
 ```html
   <script src="pathof.js"></script>
   <div data-yt-analytics="eWxGdmLU4Nk" data-yt-height="400" data-yt-width="600" data-yt-title="tracking name...?"></div>
 ```
-JavaScript:
+#####JavaScript:
 ```js
   function init() {
     videoAnalytics.on('ready', '*', function(e, state) {
