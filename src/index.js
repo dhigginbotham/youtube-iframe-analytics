@@ -54,8 +54,8 @@ priv.attachVideos = function(queue) {
 // we'll run this on init, or on demand for latent loaded
 // html fragments
 priv.collectDom = function(fn) {
-  // we want to set debug state fairly early, so we'll do
-  // it before we actually query for any videos to setup
+  // we want to set debug state asap, so we do that before 
+  // we actually collect any video elems
   videoAnalytics.setDebug();
   var dom = document.querySelectorAll('[data-yt-analytics]');
   for(var i=0;i<dom.length;++i) {
@@ -241,17 +241,6 @@ videoAnalytics.on = function(events, id, fn) {
   return videoAnalytics;
 };
 
-// public tracking event, so you attach videos after dom
-// load, or with some latent/async requests
-videoAnalytics.track = function() {
-  priv.collectDom();
-  if (priv.queue.length) {
-    priv.injectScripts();
-    priv.attachVideos(priv.queue);
-  }
-  return videoAnalytics;
-};
-
 // debug mode, allows you to capture debug data simply
 videoAnalytics.setDebug = function(bool) {
   var elem = document.querySelector('[data-yt-debug]');
@@ -263,6 +252,17 @@ videoAnalytics.setDebug = function(bool) {
   if (bool !== null) videoAnalytics.debug = bool;
   mon.debug = videoAnalytics.debug;
   videoAnalytics.logs = videoAnalytics.debug ? mon.history : [];
+  return videoAnalytics;
+};
+
+// public tracking event, so you attach videos after dom
+// load, or with some latent/async requests
+videoAnalytics.track = function() {
+  priv.collectDom();
+  if (priv.queue.length) {
+    priv.injectScripts();
+    priv.attachVideos(priv.queue);
+  }
   return videoAnalytics;
 };
 
