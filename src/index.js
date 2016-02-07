@@ -1,9 +1,9 @@
 var helpers = require('./helpers');
-var Mon = require('./mon');
+var mon = require('./mon')(false);
 var attr = helpers.attr, safeParse = helpers.safeParse;
 
 // api objects
-var videoAnalytics = {}, priv = {}, mon;
+var videoAnalytics = {}, priv = {};
 
 // we want to keep context of our dom, so we can easily ref
 // the nodes later on
@@ -253,7 +253,6 @@ videoAnalytics.setDebug = function(bool) {
   if (bool !== null) {
     videoAnalytics.debug = bool;
   }
-  if (!mon) mon = Mon(videoAnalytics.debug);
   mon.debug = videoAnalytics.debug;
   videoAnalytics.logs = videoAnalytics.debug ? mon.history : [];
   return videoAnalytics;
