@@ -249,11 +249,13 @@ videoAnalytics.setDebug = function(bool) {
     var attrs = attr(elem);
     videoAnalytics.debug = bool ? bool : attrs('data-yt-analytics-debug') == 'true';
   }
-  if (!m) m = mon(videoAnalytics.debug);
   if (bool !== null) {
     videoAnalytics.debug = bool;
-    m.debug = videoAnalytics.debug;
   }
+  if (!m) {
+    m = mon(videoAnalytics.debug);
+  }
+  m.debug = videoAnalytics.debug;
   videoAnalytics.logs = videoAnalytics.debug ? m.history : [];
   return videoAnalytics;
 };
