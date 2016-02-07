@@ -243,11 +243,11 @@ videoAnalytics.track = function() {
 
 // debug mode, allows you to capture debug data simply
 videoAnalytics.setDebug = function(bool) {
-  var elem = document.querySelector('[data-yt-analytics-debug]');
+  var elem = document.querySelector('[data-yt-debug]');
   bool = typeof bool != 'undefined' ? bool : null;
   if (elem) {
     var attrs = attr(elem);
-    videoAnalytics.debug = bool ? bool : attrs('data-yt-analytics-debug') == 'true';
+    videoAnalytics.debug = bool ? bool : attrs('data-yt-debug') == 'true';
   }
   if (bool !== null) {
     videoAnalytics.debug = bool;

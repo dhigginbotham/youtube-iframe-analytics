@@ -87,7 +87,7 @@ All events are passed with **two** parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `[data-yt-analytics]` | `String` | **true** | `videoId` of YouTube video to embed |
-| `[data-yt-analytics-debug]` | `Boolean` | **false** | allows you to set debug level for a given state, creates `.logs` array reference externally |
+| `[data-yt-debug]` | `Boolean` | **false** | allows you to set debug level for a given state, creates `.logs` array reference externally |
 | `[data-yt-height]` | `Number` | **false** | `<iframe>` height, defaults to `390` |
 | `[data-yt-title]` | `String` | **false** | Video title, will try to resolve YouTube video title if not set |
 | `[data-yt-vars]` | `JSON` | **false** | [Video player](https://developers.google.com/youtube/player_parameters?playerVersion=HTML5#Parameters) vars *(query params)* to pass to YouTube |
