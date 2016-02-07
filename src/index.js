@@ -96,14 +96,16 @@ priv.processEvents = function(key, id, state, e) {
   priv.videos[id].currentState = state;
   // title will fallback to the id, so we can detect when
   // we can call on the youtube api to get the video title
-  // this will allow us to have human readable titles, 
-  // without the overhead
+  // this will allow us to have human readable titles
   if (priv.videos[id].opts.title == id) {
     // we don't want to accept any undefined video titles,
     // so we'll gracefully fallback to our id, this really
-    // only happens when we are in a video error state
+    // only happens when we are in a video error states
     priv.videos[id].opts.title = player.getVideoData().title ? player.getVideoData().title : id;
   }
+  // YouTube records video times as a float, i am
+  // assuming we won't need/want to have such precision
+  // here with the Math.floor() calls
   var eventState = {
     currentTime: Math.floor(player.getCurrentTime()), 
     duration: Math.floor(player.getDuration()),
