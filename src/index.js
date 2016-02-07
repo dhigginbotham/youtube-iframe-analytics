@@ -1,8 +1,9 @@
 var helpers = require('./helpers');
-var attr = helpers.attr, safeParse = helpers.safeParse, mon = helpers.mon;
+var Mon = require('./mon');
+var attr = helpers.attr, safeParse = helpers.safeParse;
 
 // api objects
-var videoAnalytics = {}, priv = {}, m;
+var videoAnalytics = {}, priv = {}, mon;
 
 // we want to keep context of our dom, so we can easily ref
 // the nodes later on
@@ -118,7 +119,7 @@ priv.processEvents = function(key, id, state, e) {
       events[i](e, eventState);
     }
   }
-  m.log(eventState);
+  mon.log(eventState);
 };
 
 // sets up our dom object, so we have a strict schema to 
@@ -252,11 +253,9 @@ videoAnalytics.setDebug = function(bool) {
   if (bool !== null) {
     videoAnalytics.debug = bool;
   }
-  if (!m) {
-    m = mon(videoAnalytics.debug);
-  }
-  m.debug = videoAnalytics.debug;
-  videoAnalytics.logs = videoAnalytics.debug ? m.history : [];
+  if (!mon) mon = Mon(videoAnalytics.debug);
+  mon.debug = videoAnalytics.debug;
+  videoAnalytics.logs = videoAnalytics.debug ? mon.history : [];
   return videoAnalytics;
 };
 
