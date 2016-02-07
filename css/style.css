@@ -35,6 +35,18 @@ body {
   color: #333;
 }
 
+a {
+  text-decoration: none;
+  color: #912;
+}
+
+a:hover, 
+a:visited, 
+a:active {
+  color: #921;
+  transition: 1.5s;
+}
+
 .container {
   width: 90%;
   margin: 0 auto;
