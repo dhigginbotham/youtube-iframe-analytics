@@ -3,20 +3,33 @@
     <title>YouTube IFRAME Analytics</title>
   </head>
   <body>
+    <div id="output"></div>
     <div data-yt-analytics="M7lc1UVf-VE"></div>
     <div data-yt-analytics="4k5FvIZ6prc" data-yt-title="Some title for the video..."></div>
     <script src="../build/index.js"></script>
     <script>
+      function createDomElement(state) {
+        var el = document.getElementById('output');
+        var json = JSON.stringify(state,null,2);
+        var pre = document.createElement('pre');
+        var text = document.createTextNode(json);
+        pre.appendChild(text);
+        el.insertBefore(pre, el.childNodes[0]);
+      }
+
       function init() {
-        videoAnalytics.on('ready', 'eWxGdmLU4Nk', function(e) {
-          console.log(e);
-          console.log('ready state');
-        });
-        videoAnalytics.on('stateChange', 'eWxGdmLU4Nk', function(e) {
-          console.log(e);
-          console.log('state change');
+        videoAnalytics.on('ready', '*', function(e, state) {
+          console.log(state, e);
+          createDomElement(state);
+        }).on('stateChange', '*', function(e, state) {
+          console.log(state, e);
+          createDomElement(state);
+        }).on('error', '*', function(e, state) {
+          console.log(state, e);
+          createDomElement(state);
         });
       }
+
       document.addEventListener('DOMContentLoaded', init, false);
     </script>
   </body>
