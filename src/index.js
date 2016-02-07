@@ -27,9 +27,18 @@ pub.init = function() {
 
 // public on event, so you can externally attach to videos
 pub.on = function(event, id, fn) {
-  if (priv.videos[id]) {
-    if (!(priv.videos[id].events[event] instanceof Array)) priv.videos[id].events[event] = [];
-    priv.videos[id].events[event].push(fn);
+  var processor = function(next) {
+    if (priv.videos[next]) {
+      if (!(priv.videos[next].events[event] instanceof Array)) priv.videos[next].events[event] = [];
+      priv.videos[next].events[event].push(fn);
+    }
+  };
+  // accepts `*` as an identifier of a "global"
+  // event that should be attached to all videos
+  if (id === '*') {
+    Object.keys(priv.videos).forEach(processor);
+  } else {
+    processor(id);
   }
   return pub;
 };
@@ -58,8 +67,8 @@ priv.collectDom = function() {
 // adhere to later on in the api 
 priv.referenceObject = function(el) {
   var opts = {}, attrs = attr(el);
-  opts.videoId = attrs('data-yt-analytics') ? attrs('data-yt-analytics') : null;
-  if (opts.videoId && attrs('data-yt-tracked') == null) {
+  opts.videoId = attrs('data-yt-analytics');
+  if (attrs('data-yt-tracked') == null) {
     attrs('data-yt-tracked', true);
 
     // get opts from data attrs
@@ -87,19 +96,31 @@ priv.setupEvents = function() {
   return events;
 };
 
+// we want to standardize how we handle events, this is the
+// fn that handles such things
+priv.processEvents = function(key, id, state, e) {
+  console.log('key %s id %s state %s', key, id, state);
+  if (priv.videos[id].events[key]) {
+    var events = priv.videos[id].events[key];
+    var player = priv.videos[id].player;
+    return events.forEach(function(event) {
+      return event(e, {
+        state: state, 
+        currentTime: player.getCurrentTime(), 
+        duration: player.getDuration(), 
+        ms: new Date().getTime()
+      });
+    });
+  }
+};
+
 // the iframe_api allows us to attach dom style events to
 // videos, we always fire these internally, but then we 
 // also allow you to attach events to a video, by its id
 
 // default ready state event
 priv.events.ready = function(e) {
-  // console.log('%s:ready', e.target._id);
-  if (priv.videos[e.target._id].events.ready) {
-    var events = priv.videos[e.target._id].events.ready;
-    return events.forEach(function(event) {
-      return event(e);
-    });
-  }
+  return priv.processEvents('ready', e.target._id, 'ready', e);
 };
 
 // default state change event
@@ -116,18 +137,7 @@ priv.events.stateChange = function(e) {
   } else if (e.data === YT.PlayerState.PLAYING) {
     state = 'playing';
   }
-  // console.log('%s:%s', e.target._id, state);
-  if (priv.videos[e.target._id].events.stateChange) {
-    var events = priv.videos[e.target._id].events.stateChange;
-    var player = priv.videos[e.target._id].player;
-    events.forEach(function(event) {
-      return event({
-        state: state, 
-        currentTime: player.getCurrentTime(), 
-        duration: player.getDuration(), 
-        ms: new Date().getTime()}, e);   
-    });
-  }
+  return priv.processEvents('stateChange', e.target._id, state, e);
 };
 
 priv.events.error = function(e) {
@@ -139,18 +149,7 @@ priv.events.error = function(e) {
   } else if (e.data == 101 || e.data == 150) {
     state = 'embedding forbidden';
   }
-  // console.log('error:%s:%d:%s', e.target._id, e.data, state);
-  if (priv.videos[e.target._id].events.error) {
-    var events = priv.videos[e.target._id].events.error;
-    var player = priv.videos[e.target._id].player;
-    events.forEach(function(event) {
-      return event({
-        state: state, 
-        currentTime: player.getCurrentTime(), 
-        duration: player.getDuration(), 
-        ms: new Date().getTime()}, e);   
-    });
-  }
+  return priv.processEvents('error', e.target._id, state, e);
 };
 
 // we include youtubes js script async, and we'll need to 
