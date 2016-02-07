@@ -17,9 +17,10 @@ You can find out more about why/when these fire [here](https://developers.google
 - `stateChange`
 
 All events are passed with two parameters:
-- `event` - is the event object passed from the youtube event, follows their API
+- `event` - is the event object passed from the youtube event, it will remain **unmodified**
 - `state` - is an internally built object to use for tracking/analytics/debugging for example:
 ```json
+// example output of a state object on `stateChange` event
 {
     "currentTime": 641.070869,
     "duration": 1343.641,
