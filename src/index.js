@@ -244,13 +244,14 @@ videoAnalytics.track = function() {
 // debug mode, allows you to capture debug data simply
 videoAnalytics.setDebug = function(bool) {
   var elem = document.querySelector('[data-yt-analytics-debug]');
-  bool = typeof bool != 'undefined' ? bool : null; 
+  bool = typeof bool != 'undefined' ? bool : null;
+  videoAnalytics.isDebug = bool;
   if (elem) {
     var attrs = attr(elem);
-    var debug = videoAnalytics.isDebug = bool ? bool : attrs('data-yt-analytics-debug') == 'true';
-    cl = cl(debug);
-    if (debug) videoAnalytics.logs = cl.history;
+    videoAnalytics.isDebug = bool ? bool : attrs('data-yt-analytics-debug') == 'true';
+    cl = cl(videoAnalytics.isDebug);
   }
+  if (videoAnalytics.isDebug) videoAnalytics.logs = cl.history;
   return videoAnalytics;
 };
 
