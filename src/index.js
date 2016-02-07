@@ -164,10 +164,13 @@ priv.referenceObject = function(el) {
   }
 };
 
+//
+// EVENTS
+// --------------------------------------------------------
 // the iframe_api allows us to attach dom style events to
 // videos, we always fire these internally, but then we 
 // also allow you to attach events to a video, by its id
-// --------------------------------------------------------
+//
 
 priv.events.apiChange = function(e) {
   priv.processEvents('apiChange', e.target._id, 'apiChange', e);
@@ -219,6 +222,11 @@ priv.events.stateChange = function(e) {
   }
   priv.processEvents('stateChange', e.target._id, state, e);
 };
+
+//
+// PUBLIC API
+// --------------------------------------------------------
+//
 
 // public on event, so you can externally attach to videos
 // this fn can be recursive, so you know, be smart with this
