@@ -231,6 +231,10 @@ videoAnalytics.track = function() {
   }
   return videoAnalytics;
 };
+
+// we want to have external access to the videos we're
+// tracking for interaction with other apis
+videoAnalytics.videos = priv.videos;
   
 document.addEventListener('DOMContentLoaded', priv.init, false);
 

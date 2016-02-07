@@ -24,7 +24,11 @@ Uses browserify, so `npm i`, no jquery, expects you're on a *modernish* browser 
   ```js
   videoAnalytics.track();
   ```
-
+- `.videos` - returns object of videos on the dom for interaction with external api's
+  ```js
+  videoAnalytics.videos;
+  ```
+  
 ----
 
 ### Events
