@@ -36,24 +36,28 @@ body {
 }
 
 .container {
-  width: 80%;
+  width: 90%;
   margin: 0 auto;
   display: block;
   padding: 0 1%;
 }
 
-.two-col {
-  width: 50%;
-  float: left;
+@media (min-width: 768px) {
+  .two-col {
+    width: 48%;
+    float: left;
+    padding: 0 1%;
+  }
+}
+
+.column-card {
+  background: #eee;
+  border-radius: 2px;
+  border: 1px solid #ccc;
 }
 
 #output {
   margin: 20px;
-  padding: 15px;
-  background: #eee;
-  border-radius: 2px;
-  border: 1px solid #ccc;
-  height: 300px;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  min-height: 300px;
+  overflow: scroll;
 }
