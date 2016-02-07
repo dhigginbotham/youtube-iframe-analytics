@@ -75,7 +75,7 @@ Here's a link to [**fiddle**](https://fiddle.jshell.net/dhiggy/egas87om/show/).
 | --------- | ---- | -------- | ----------- |
 | `[data-yt-analytics]` | `String` | **true** | `videoId` of YouTube video to embed |
 | `[data-yt-height]` | `Number` | **false** | `<iframe>` height, defaults to `390` |
-| `[data-yt-title]` | `String` | **false** | Video title, will try to resolve YouTube video title if not set, falls back to `videoId` |
+| `[data-yt-title]` | `String` | **false** | Video title, will try to resolve YouTube video title if not set |
 | `[data-yt-vars]` | `String` | **false** | Video player vars *(query params)* to pass to YouTube |
 | `[data-yt-width]` | `Number` | **false** | `<iframe>` width, defaults to `640` |
 
