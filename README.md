@@ -70,7 +70,7 @@ All events are passed with **two** parameters:
 ----
 
 ### Usage
-Here's a link to [**fiddle**](https://fiddle.jshell.net/dhiggy/egas87om/show/).
+[You can check out the demo](https://dhigginbotham.github.io/youtube-iframe-analytics/), if thats more your speed.
 
 #####Markup:
 ```html
