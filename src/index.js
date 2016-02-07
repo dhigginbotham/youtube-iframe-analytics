@@ -4,50 +4,6 @@ var attr = helpers.attr;
 // api objects
 var videoAnalytics = {}, priv = {};
 
-// init fn that happens on DOMContentLoaded
-videoAnalytics.init = function() {
-  priv.collectDom();
-  if (priv.queue.length) priv.injectScripts();
-};
-
-// public on event, so you can externally attach to videos
-videoAnalytics.on = function(event, id, fn) {
-  var processor = function(next) {
-    if (priv.videos[next]) {
-      if (!(priv.videos[next].events[event] instanceof Array)) priv.videos[next].events[event] = [];
-      priv.videos[next].events[event].push(fn);
-    }
-  };
-  // accepts `*` as an identifier of a "global"
-  // event that should be attached to all videos
-  if (id === '*') {
-    Object.keys(priv.videos).forEach(processor);
-  } else {
-    processor(id);
-  }
-  return videoAnalytics;
-};
-
-// the way the iframe_api works is by replacing an element
-// with an iframe, so we'll want to attach the video as 
-// needed
-videoAnalytics.attachVideos = function() {
-  var video;
-  while(video = priv.queue.shift()) {
-    video.player = new YT.Player(video.el, video.opts);
-    video.player._id = video.opts.videoId;
-  }
-};
-
-// we'll run this on init, or on demand for latent loaded
-// html fragments
-priv.collectDom = function() {
-  var dom = document.querySelectorAll('[data-yt-analytics]');
-  for(var i=0;i<dom.length;++i) {
-    priv.referenceObject(dom[i]);
-  }
-};
-
 // we want to keep context of our dom, so we can easily ref
 // the nodes later on
 priv.videos = {};
@@ -62,6 +18,44 @@ priv.events = {};
 // we keep all untracked videos in this queue and shift 
 // them out as we get to them
 priv.queue = [];
+
+// keep track of youtube calling our fn
+priv.loaded = false;
+
+// init fn that happens on DOMContentLoaded
+priv.init = function() {
+  priv.collectDom();
+  if (priv.queue.length) priv.injectScripts();
+};
+
+// the way the iframe_api works is by replacing an element
+// with an iframe, so we'll want to attach the video as 
+// needed
+priv.attachVideos = function() {
+  if (priv.loaded) {
+    var video;
+    while(video = priv.queue.shift()) {
+      video.player = new YT.Player(video.el, video.opts);
+      video.player._id = video.opts.videoId;
+    }
+  }
+};
+
+// this just allows us to open up .track publically and
+// mitigate any race conditions with the youtube include
+priv.attachVideosInternal = function() {
+  priv.loaded = true;
+  priv.attachVideos();
+}
+
+// we'll run this on init, or on demand for latent loaded
+// html fragments
+priv.collectDom = function() {
+  var dom = document.querySelectorAll('[data-yt-analytics]');
+  for(var i=0;i<dom.length;++i) {
+    priv.referenceObject(dom[i]);
+  }
+};
 
 // sets up our dom object, so we have a strict schema to 
 // adhere to later on in the api 
@@ -108,9 +102,10 @@ priv.processEvents = function(key, id, state, e) {
     var player = priv.videos[id].player;
     var processor = function(next) {
       return next(e, {
-        state: state, 
         currentTime: player.getCurrentTime(), 
         duration: player.getDuration(),
+        event: key,
+        state: state,
         ms: new Date().getTime()
       });
     };
@@ -180,7 +175,7 @@ priv.injectScripts = function(fn) {
     // we only want to do this once, and this is the best
     // time to do this once, this also keeps all of the
     // conditional stuff to a single entry, so it works
-    window['onYouTubeIframeAPIReady'] = videoAnalytics.attachVideos;
+    window['onYouTubeIframeAPIReady'] = priv.attachVideosInternal;
 
     var placement = document.getElementsByTagName('script')[0];
     priv.scriptInclude = document.createElement('script');
@@ -195,7 +190,36 @@ priv.injectScripts = function(fn) {
     placement.parentNode.insertBefore(priv.scriptInclude, placement);
   }
 };
+
+// public on event, so you can externally attach to videos
+videoAnalytics.on = function(event, id, fn) {
+  var processor = function(next) {
+    if (priv.videos[next]) {
+      if (!(priv.videos[next].events[event] instanceof Array)) priv.videos[next].events[event] = [];
+      priv.videos[next].events[event].push(fn);
+    }
+  };
+  // accepts `*` as an identifier of a "global"
+  // event that should be attached to all videos
+  if (id === '*') {
+    Object.keys(priv.videos).forEach(processor);
+  } else {
+    processor(id);
+  }
+  return videoAnalytics;
+};
+
+// public tracking event, so you attach videos after dom
+// load, or with some latent/async requests
+videoAnalytics.track = function() {
+  priv.collectDom();
+  if (priv.queue.length) {
+    priv.injectScripts();
+    priv.attachVideos();
+  }
+  return videoAnalytics;
+};
   
-document.addEventListener('DOMContentLoaded', videoAnalytics.init, false);
+document.addEventListener('DOMContentLoaded', priv.init, false);
 
 module.exports = videoAnalytics;
