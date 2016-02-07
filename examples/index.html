@@ -15,7 +15,8 @@
 
     <script src="js/videoAnalytics.js" data-yt-analytics-debug="true"></script>
     <script>
-      function createDomElement(state) {
+
+      function createDomElement(e, state) {
         var el = document.getElementById('output');
         var json = JSON.stringify(state,null,2);
         var pre = document.createElement('pre');
@@ -25,19 +26,14 @@
       }
 
       function init() {
-        videoAnalytics.on('ready', '*', function(e, state) {
-          // console.log(state, e);
-          createDomElement(state);
-        }).on('stateChange', '*', function(e, state) {
-          // console.log(state, e);
-          createDomElement(state);
-        }).on('error', '*', function(e, state) {
-          // console.log(state, e);
-          createDomElement(state);
-        });
+        videoAnalytics
+          .on('ready', '*', createDomElement)
+          .on('stateChange', '*', createDomElement)
+          .on('error', '*', createDomElement);
       }
 
       document.addEventListener('DOMContentLoaded', init, false);
+
     </script>
   </body>
 </html>
