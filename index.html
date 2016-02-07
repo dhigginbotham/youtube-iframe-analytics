@@ -31,7 +31,11 @@
         var pre = document.createElement('pre');
         var text = document.createTextNode(json);
         pre.appendChild(text);
-        el.insertBefore(pre, el.childNodes[0]);
+        if (el.childNodes.length) {
+          el.insertBefore(pre, el.childNodes[0]);
+        } else {
+          el.appendChild(pre);
+        }
       }
 
       function init() {
