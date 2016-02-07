@@ -1,4 +1,4 @@
-exports.attr = function(elem) {
+var attr = function(elem) {
   if (typeof elem != 'undefined') {
     return function $attr(key, val) {
       if(typeof val == 'undefined') {
@@ -14,7 +14,7 @@ exports.attr = function(elem) {
   }
 }
 
-exports.stringifySafe = function(str) {
+var stringifySafe = function(str) {
   var output = null;
   try {
     output = JSON.parse(str);
@@ -30,10 +30,10 @@ var cl = function(debug) {
 };
 
 cl.prototype.log = function() {
-  this.history.push(arguments);
+  var cp = Array.prototype.slice.call(arguments);
+  this.history.push(cp);
   if (this.debug) {
     if(typeof window['console'] != 'undefined' && console.log) {
-      var cp = Array.prototype.slice.call(arguments);
       if (cp.length === 1 && typeof cp[0] == 'object') cp = JSON.stringify(cp[0],null,2);
       console.log(cp);
     }
@@ -41,4 +41,8 @@ cl.prototype.log = function() {
   return this;
 };
 
-exports.cl = cl;
+module.exports = {
+  attr: attr,
+  cl: cl,
+  stringifySafe: stringifySafe
+};

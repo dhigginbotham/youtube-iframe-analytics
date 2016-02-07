@@ -1,5 +1,5 @@
 var helpers = require('./helpers');
-var attr = helpers.attr, stringifySafe = helpers.stringifySafe, cl = helpers.cl;
+var attr = helpers.attr, safeParse = helpers.safeParse, cl = helpers.cl;
 
 // api objects
 var videoAnalytics = {}, priv = {};
@@ -89,6 +89,20 @@ priv.injectScripts = function(fn) {
 priv.processEvents = function(key, id, state, e) {
   var events = priv.videos[id].events[key],
       player = priv.videos[id].player;
+  // if we get at our videos externally, we will likely
+  // want to know whatever the state of the current video
+  // is in
+  priv.videos[id].currentState = state;
+  // title will fallback to the id, so we can detect when
+  // we can call on the youtube api to get the video title
+  // this will allow us to have human readable titles, 
+  // without the overhead
+  if (priv.videos[id].opts.title == id) {
+    // we don't want to accept any undefined video titles,
+    // so we'll gracefully fallback to our id, this really
+    // only happens when we are in a video error state
+    priv.videos[id].opts.title = player.getVideoData().title ? player.getVideoData().title : id;
+  }
   var eventState = {
     currentTime: Math.floor(player.getCurrentTime()), 
     duration: Math.floor(player.getDuration()),
@@ -100,20 +114,6 @@ priv.processEvents = function(key, id, state, e) {
     ms: new Date().getTime()
   };
   if (priv.videos[id].events[key]) {
-    // if we get at our videos externally, we will likely
-    // want to know whatever the state of the current video
-    // is in
-    priv.videos[id].currentState = state;
-    // title will fallback to the id, so we can detect when
-    // we can call on the youtube api to get the video title
-    // this will allow us to have human readable titles, 
-    // without the overhead
-    if (priv.videos[id].opts.title == id) {
-      // we don't want to accept any undefined video titles,
-      // so we'll gracefully fallback to our id, this really
-      // only happens when we are in a video error state
-      priv.videos[id].opts.title = player.getVideoData().title ? player.getVideoData().title : id;
-    }
     for(var i=0;i<events.length;++i) {
       events[i](e, eventState);
     }
@@ -132,7 +132,7 @@ priv.referenceObject = function(el) {
     // get opts from data attrs
     opts.width = attrs('data-yt-width') ? attrs('data-yt-width') : 640;
     opts.height = attrs('data-yt-height') ? attrs('data-yt-height') : 390;
-    opts.playerVars = attrs('data-yt-vars') ? stringifySafe(attrs('data-yt-vars')) : null;
+    opts.playerVars = attrs('data-yt-vars') ? safeParse(attrs('data-yt-vars')) : null;
     opts.title = attrs('data-yt-title') ? attrs('data-yt-title') : opts.videoId;
     
     // setup base events
