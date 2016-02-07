@@ -26,4 +26,4 @@ gulp.task('watch', function() {
   gulp.watch(['./src/**/*','./examples/**/*'], ['scripts']);
 });
 
-gulp.task('default', ['scripts']);
+gulp.task('default', ['scripts', 'watch']);

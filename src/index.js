@@ -41,6 +41,15 @@ priv.attachVideos = function() {
   }
 };
 
+// we'll run this on init, or on demand for latent loaded
+// html fragments
+priv.collectDom = function() {
+  var dom = document.querySelectorAll('[data-yt-analytics]');
+  for(var i=0;i<dom.length;++i) {
+    priv.referenceObject(dom[i]);
+  }
+};
+
 // this function gets fired when youtube js is initialized
 // also, this safely allows us to externally use .track
 // without race conditions
@@ -49,12 +58,62 @@ priv.externalApiReady = function() {
   priv.attachVideos();
 };
 
-// we'll run this on init, or on demand for latent loaded
-// html fragments
-priv.collectDom = function() {
-  var dom = document.querySelectorAll('[data-yt-analytics]');
-  for(var i=0;i<dom.length;++i) {
-    priv.referenceObject(dom[i]);
+// we include youtubes js script async, and we'll need to 
+// keep track of the state of that include
+priv.injectScripts = function(fn) {
+  if (!priv.scriptInclude) {
+    // we only want to do this once, and this is the best
+    // time to do this once, this also keeps all of the
+    // conditional stuff to a single entry, so it works
+    window['onYouTubeIframeAPIReady'] = priv.externalApiReady;
+
+    var placement = document.getElementsByTagName('script')[0];
+    priv.scriptInclude = document.createElement('script');
+    
+    // if fn, lets treat async, otherwise we'll be blocking
+    if (typeof fn == 'function') {
+      priv.scriptInclude.setAttribute('async', true);
+      priv.scriptInclude.addEventListener('load', fn, false);
+    }
+
+    priv.scriptInclude.setAttribute('src', '//www.youtube.com/iframe_api');
+    placement.parentNode.insertBefore(priv.scriptInclude, placement);
+  }
+};
+
+// we want to standardize how we handle events, this is the
+// fn that handles such things
+priv.processEvents = function(key, id, state, e) {
+  // console.log('key %s id %s state %s', key, id, state);
+  if (priv.videos[id].events[key]) {
+    var events = priv.videos[id].events[key],
+        player = priv.videos[id].player;
+    // if we get at our videos externally, we will likely
+    // want to know whatever the state of the current video
+    // is in
+    priv.videos[id].currentState = state;
+    // title will fallback to the id, so we can detect when
+    // we can call on the youtube api to get the video title
+    // this will allow us to have human readable titles, 
+    // without the overhead
+    if (priv.videos[id].opts.title == id) {
+      // we don't want to accept any undefined video titles,
+      // so we'll gracefully fallback to our id, this really
+      // only happens when we are in a video error state
+      priv.videos[id].opts.title = player.getVideoData().title ? player.getVideoData().title : id;
+    }
+    for(var i=0;i<events.length;++i) {
+      events[i](e, {
+        currentTime: Math.floor(player.getCurrentTime()), 
+        duration: Math.floor(player.getDuration()),
+        event: key,
+        id: id,
+        title: priv.videos[id].opts.title,
+        state: state,
+        muted: player.isMuted(),
+        ms: new Date().getTime()
+      });
+    }
   }
 };
 
@@ -92,42 +151,6 @@ priv.setupEvents = function() {
   events.onPlaybackRateChange = priv.events.playbackRateChange;
   events.onApiChange = priv.events.apiChange;
   return events;
-};
-
-// we want to standardize how we handle events, this is the
-// fn that handles such things
-priv.processEvents = function(key, id, state, e) {
-  // console.log('key %s id %s state %s', key, id, state);
-  if (priv.videos[id].events[key]) {
-    var events = priv.videos[id].events[key],
-        player = priv.videos[id].player;
-    // if we get at our videos externally, we will likely
-    // want to know whatever the state of the current video
-    // is in
-    priv.videos[id].currentState = state;
-    // title will fallback to the id, so we can detect when
-    // we can call on the youtube api to get the video title
-    // this will allow us to have human readable titles, 
-    // without the overhead
-    if (priv.videos[id].opts.title == id) {
-      // we don't want to accept any undefined video titles,
-      // so we'll gracefully fallback to our id, this really
-      // only happens when we are in a video error state
-      priv.videos[id].opts.title = player.getVideoData().title ? player.getVideoData().title : id;
-    }
-    for(var i=0;i<events.length;++i) {
-      events[i](e, {
-        currentTime: Math.floor(player.getCurrentTime()), 
-        duration: Math.floor(player.getDuration()),
-        event: key,
-        id: id,
-        title: priv.videos[id].opts.title,
-        state: state,
-        muted: player.isMuted(),
-        ms: new Date().getTime()
-      });
-    }
-  }
 };
 
 // the iframe_api allows us to attach dom style events to
@@ -183,29 +206,6 @@ priv.events.stateChange = function(e) {
     state = 'playing';
   }
   priv.processEvents('stateChange', e.target._id, state, e);
-};
-
-// we include youtubes js script async, and we'll need to 
-// keep track of the state of that include
-priv.injectScripts = function(fn) {
-  if (!priv.scriptInclude) {
-    // we only want to do this once, and this is the best
-    // time to do this once, this also keeps all of the
-    // conditional stuff to a single entry, so it works
-    window['onYouTubeIframeAPIReady'] = priv.externalApiReady;
-
-    var placement = document.getElementsByTagName('script')[0];
-    priv.scriptInclude = document.createElement('script');
-    
-    // if fn, lets treat async, otherwise we'll be blocking
-    if (typeof fn == 'function') {
-      priv.scriptInclude.setAttribute('async', true);
-      priv.scriptInclude.addEventListener('load', fn, false);
-    }
-
-    priv.scriptInclude.setAttribute('src', '//www.youtube.com/iframe_api');
-    placement.parentNode.insertBefore(priv.scriptInclude, placement);
-  }
 };
 
 // public on event, so you can externally attach to videos
