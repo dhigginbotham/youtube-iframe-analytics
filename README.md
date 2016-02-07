@@ -70,6 +70,15 @@ Here's a link to [**fiddle**](https://fiddle.jshell.net/dhiggy/egas87om/show/).
 <script src="pathof.js"></script>
 <div data-yt-analytics="eWxGdmLU4Nk" data-yt-height="400" data-yt-width="600" data-yt-title="tracking name...?"></div>
 ```
+######Markup Options:
+| Attribute | Required | Description |
+| -------- | -------- | ----------- |
+| `[data-yt-analytics]` | **true** | VideoId of youtube video to embed |
+| `[data-yt-height]` | **false** | iframe height, defaults to 390 |
+| `[data-yt-title]` | **false** | video title, will try to resolve youtube video title if not set |
+| `[data-yt-vars]` | **false** | video player vars to pass to youtube |
+| `[data-yt-width]` | **false** | iframe width, defaults to 640 |
+
 #####JavaScript:
 ```js
 function init() {
