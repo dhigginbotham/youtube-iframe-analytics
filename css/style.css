@@ -11,12 +11,12 @@
  */
 .cf:before,
 .cf:after {
-    content: " "; /* 1 */
-    display: table; /* 2 */
+  content: " "; /* 1 */
+  display: table; /* 2 */
 }
 
 .cf:after {
-    clear: both;
+  clear: both;
 }
 
 /**
@@ -24,7 +24,7 @@
  * Include this rule to trigger hasLayout and contain floats.
  */
 .cf {
-    *zoom: 1;
+  *zoom: 1;
 }
 
 body {
@@ -39,7 +39,7 @@ body {
   width: 80%;
   margin: 0 auto;
   display: block;
-  padding: 0 5%;
+  padding: 0 1%;
 }
 
 .two-col {
