@@ -22,12 +22,22 @@ All events are passed with two parameters:
 ```json
 // example output of a state object on `stateChange` event
 {
-    "currentTime": 641.070869,
+    "currentTime": 638.612874,
     "duration": 1343.641,
     "event": "stateChange",
     "id": "M7lc1UVf-VE",
+    "title": "YouTube Developers Live: Embedded Web Player Customization",
     "state": "paused",
-    "ms": 1454845150087
+    "ms": 1454846039769
+},
+{
+    "currentTime": 637,
+    "duration": 1343.641,
+    "event": "stateChange",
+    "id": "M7lc1UVf-VE",
+    "title": "YouTube Developers Live: Embedded Web Player Customization",
+    "state": "playing",
+    "ms": 1454846037978
 }
 ```
 

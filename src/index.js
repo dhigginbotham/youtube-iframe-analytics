@@ -100,12 +100,14 @@ priv.processEvents = function(key, id, state, e) {
   if (priv.videos[id].events[key]) {
     var events = priv.videos[id].events[key];
     var player = priv.videos[id].player;
+    var title = priv.videos[id].opts.title == id ? player.getVideoData().title : priv.videos[id].opts.title;  
     var processor = function(next) {
       return next(e, {
         currentTime: player.getCurrentTime(), 
         duration: player.getDuration(),
         event: key,
         id: id,
+        title: title,
         state: state,
         ms: new Date().getTime()
       });
