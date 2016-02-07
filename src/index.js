@@ -90,16 +90,6 @@ priv.injectScripts = function(fn) {
 priv.processEvents = function(key, id, state, e) {
   var events = priv.videos[id].events[key],
       player = priv.videos[id].player;
-  var eventState = {
-    currentTime: Math.floor(player.getCurrentTime()), 
-    duration: Math.floor(player.getDuration()),
-    event: key,
-    id: id,
-    title: priv.videos[id].opts.title,
-    state: state,
-    muted: player.isMuted(),
-    ms: new Date().getTime()
-  };
   // if we get at our videos externally, we will likely
   // want to know whatever the state of the current video
   // is in
@@ -114,6 +104,16 @@ priv.processEvents = function(key, id, state, e) {
     // only happens when we are in a video error state
     priv.videos[id].opts.title = player.getVideoData().title ? player.getVideoData().title : id;
   }
+  var eventState = {
+    currentTime: Math.floor(player.getCurrentTime()), 
+    duration: Math.floor(player.getDuration()),
+    event: key,
+    id: id,
+    title: priv.videos[id].opts.title,
+    state: priv.videos[id].currentState,
+    muted: player.isMuted(),
+    ms: new Date().getTime()
+  };
   if (priv.videos[id].events[key]) {
     for(var i=0;i<events.length;++i) {
       events[i](e, eventState);
@@ -214,20 +214,31 @@ priv.events.stateChange = function(e) {
 };
 
 // public on event, so you can externally attach to videos
-videoAnalytics.on = function(event, id, fn) {
-  var processor = function(next) {
+videoAnalytics.on = function(events, id, fn) {
+  var recurse = false, event;
+  if (events instanceof Array) {
+    recurse = events.length ? true : false;
+    event = events.shift();
+  } else {
+    event = events;
+  }
+  var processor = function(next, ev) {
     if (priv.videos[next]) {
-      if (!(priv.videos[next].events[event] instanceof Array)) priv.videos[next].events[event] = [];
-      priv.videos[next].events[event].push(fn);
+      if (!(priv.videos[next].events[ev] instanceof Array)) priv.videos[next].events[ev] = [];
+      priv.videos[next].events[ev].push(fn);
     }
   };
   // accepts `*` as an identifier of a "global"
   // event that should be attached to all videos
   if (id === '*') {
-    Object.keys(priv.videos).forEach(processor);
+    var vids = Object.keys(priv.videos);
+    for(var i=0;i<vids.length;++i) {
+      processor(vids[i], event);
+    }
   } else {
     processor(id);
   }
+  if (recurse) return videoAnalytics.on(events, id, fn);
   return videoAnalytics;
 };
 

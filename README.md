@@ -18,6 +18,12 @@ Uses browserify, so `npm i`, no jquery, expects you're on a *modernish* browser 
   videoAnalytics.on('error', '*', function(e, state) {
     console.log(e, state);
   });
+  
+  // you can also pass an array of events
+  videoAnalytics.on(['ready','stateChange','error'], '*', function(e, state) {
+    // i'll be attached to all three events, also I will be attached to every video
+    console.log(e, state);
+  });
   ```
 - `.setDebug(boolean)` - you can programmatically set debug mode, you will then have access to `.logs` array which has a history of all debug logging within that state.
   
