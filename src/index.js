@@ -41,9 +41,10 @@ priv.attachVideos = function() {
   }
 };
 
-// this just allows us to open up .track publically and
-// mitigate any race conditions with the youtube include
-priv.attachVideosInternal = function() {
+// this function gets fired when youtube js is initialized
+// also, this safely allows us to externally use .track
+// without race conditions
+priv.externalApiReady = function() {
   priv.loaded = true;
   priv.attachVideos();
 };
@@ -191,7 +192,7 @@ priv.injectScripts = function(fn) {
     // we only want to do this once, and this is the best
     // time to do this once, this also keeps all of the
     // conditional stuff to a single entry, so it works
-    window['onYouTubeIframeAPIReady'] = priv.attachVideosInternal;
+    window['onYouTubeIframeAPIReady'] = priv.externalApiReady;
 
     var placement = document.getElementsByTagName('script')[0];
     priv.scriptInclude = document.createElement('script');
@@ -202,7 +203,7 @@ priv.injectScripts = function(fn) {
       priv.scriptInclude.addEventListener('load', fn, false);
     }
 
-    priv.scriptInclude.setAttribute('src', '//www.youtube.com/iframe_api');
+    priv.scriptInclude.setAttribute('src', 'http://www.youtube.com/iframe_api');
     placement.parentNode.insertBefore(priv.scriptInclude, placement);
   }
 };
