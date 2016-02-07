@@ -1,11 +1,11 @@
-var mon = function(debug) {
-  if (!(this instanceof mon)) return new mon(debug);
+var Mon = function(debug) {
+  if (!(this instanceof Mon)) return new Mon(debug);
   this.debug = debug;
   this.history = [];
   return this;
 };
 
-mon.prototype.log = function() {
+Mon.prototype.log = function() {
   var cp = Array.prototype.slice.call(arguments);
   this.history.push(cp);
   if (this.debug) {
@@ -17,4 +17,4 @@ mon.prototype.log = function() {
   return this;
 };
 
-module.exports = mon;
+module.exports = Mon;
