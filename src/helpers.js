@@ -13,3 +13,11 @@ exports.attr = function attr(elem) {
     return null;
   }
 }
+
+exports.stringifySafe = function stringifySafe(str) {
+  var output = null;
+  try {
+    output = JSON.stringify(str);
+  } catch (ex) {}
+  return output;
+};

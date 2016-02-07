@@ -1,5 +1,5 @@
-## YouTube `<IFRAME>` Analytics
-I had a need to get at the events fired from [YouTubes `<IFRAME>` API](https://developers.google.com/youtube/iframe_api_reference) so that I could send them off to analytics -- but I wanted that output of data to be fairly agnostic to whichever analytics provider I might be using. So instead of making a lot of assumptions about where this data goes to, just attach onto an event and you've got data to send over to SiteCatalyst/Custom/etc.
+## YouTube `<iframe>` Analytics
+I had a need to get at the events fired from [YouTubes `<iframe>` API](https://developers.google.com/youtube/iframe_api_reference) so that I could send them off to analytics -- but I wanted that output of data to be fairly agnostic to whichever analytics provider I might be using. So instead of making a lot of assumptions about where this data goes to, just attach onto an event and you've got data to send over to SiteCatalyst/Custom/etc.
 
 Uses browserify, so `npm i`, no jquery, expects you're on a *modernish* browser **(IE9 and up)**.
 
@@ -76,7 +76,7 @@ Here's a link to [**fiddle**](https://fiddle.jshell.net/dhiggy/egas87om/show/).
 | `[data-yt-analytics]` | `String` | **true** | `videoId` of YouTube video to embed |
 | `[data-yt-height]` | `Number` | **false** | `<iframe>` height, defaults to `390` |
 | `[data-yt-title]` | `String` | **false** | Video title, will try to resolve YouTube video title if not set |
-| `[data-yt-vars]` | `String` | **false** | Video player vars *(query params)* to pass to YouTube |
+| `[data-yt-vars]` | `JSON` | **false** | [Video player](https://developers.google.com/youtube/player_parameters?playerVersion=HTML5) vars *(query params)* to pass to YouTube |
 | `[data-yt-width]` | `Number` | **false** | `<iframe>` width, defaults to `640` |
 
 #####JavaScript:

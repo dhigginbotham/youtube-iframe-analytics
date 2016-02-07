@@ -1,5 +1,5 @@
 var helpers = require('./helpers');
-var attr = helpers.attr;
+var attr = helpers.attr, stringifySafe = helpers.stringifySafe;
 
 // api objects
 var videoAnalytics = {}, priv = {};
@@ -68,7 +68,7 @@ priv.referenceObject = function(el) {
     // get opts from data attrs
     opts.width = attrs('data-yt-width') ? attrs('data-yt-width') : 640;
     opts.height = attrs('data-yt-height') ? attrs('data-yt-height') : 390;
-    opts.playerVars = attrs('data-yt-vars') ? attrs('data-yt-vars') : null;
+    opts.playerVars = attrs('data-yt-vars') ? stringifySafe(attrs('data-yt-vars')) : null;
     opts.title = attrs('data-yt-title') ? attrs('data-yt-title') : opts.videoId;
     
     // setup base events
@@ -118,6 +118,7 @@ priv.processEvents = function(key, id, state, e) {
         id: id,
         title: priv.videos[id].opts.title,
         state: state,
+        muted: player.isMuted(),
         ms: new Date().getTime()
       });
     }
