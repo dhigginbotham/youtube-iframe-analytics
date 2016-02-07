@@ -100,6 +100,10 @@ priv.processEvents = function(key, id, state, e) {
   if (priv.videos[id].events[key]) {
     var events = priv.videos[id].events[key],
         player = priv.videos[id].player;
+    // if we get at our videos externally, we will likely
+    // want to know whatever the state of the current video
+    // is in
+    priv.videos[id].currentState = state;
     // title will fallback to the id, so we can detect when
     // we can call on the youtube api to get the video title
     // this will allow us to have human readable titles, 
