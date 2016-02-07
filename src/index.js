@@ -203,7 +203,7 @@ priv.events.ready = function(e) {
 // we transform the current state `id` to a human readable
 // string based on the youtube api docs
 priv.events.stateChange = function(e) {
-  var state = 'initializing';
+  var state = 'unknown';
   if (e.data === YT.PlayerState.BUFFERING) {
     state = 'buffering';
   } else if (e.data === YT.PlayerState.CUED) {
