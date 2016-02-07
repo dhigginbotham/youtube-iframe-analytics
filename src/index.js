@@ -1,8 +1,8 @@
 var helpers = require('./helpers');
-var attr = helpers.attr, safeParse = helpers.safeParse, cl = helpers.cl;
+var attr = helpers.attr, safeParse = helpers.safeParse, mon = helpers.mon;
 
 // api objects
-var videoAnalytics = {}, priv = {};
+var videoAnalytics = {}, priv = {}, m;
 
 // we want to keep context of our dom, so we can easily ref
 // the nodes later on
@@ -118,8 +118,7 @@ priv.processEvents = function(key, id, state, e) {
       events[i](e, eventState);
     }
   }
-  cl.log(eventState);
-  
+  m.log(eventState);
 };
 
 // sets up our dom object, so we have a strict schema to 
@@ -246,13 +245,16 @@ videoAnalytics.track = function() {
 videoAnalytics.setDebug = function(bool) {
   var elem = document.querySelector('[data-yt-analytics-debug]');
   bool = typeof bool != 'undefined' ? bool : null;
-  videoAnalytics.isDebug = bool;
   if (elem) {
     var attrs = attr(elem);
-    videoAnalytics.isDebug = bool ? bool : attrs('data-yt-analytics-debug') == 'true';
-    cl = cl(videoAnalytics.isDebug);
+    videoAnalytics.debug = bool ? bool : attrs('data-yt-analytics-debug') == 'true';
   }
-  if (videoAnalytics.isDebug) videoAnalytics.logs = cl.history;
+  if (!m) m = mon(videoAnalytics.debug);
+  if (bool !== null) {
+    videoAnalytics.debug = bool;
+    m.debug = videoAnalytics.debug;
+  }
+  videoAnalytics.logs = videoAnalytics.debug ? m.history : [];
   return videoAnalytics;
 };
 

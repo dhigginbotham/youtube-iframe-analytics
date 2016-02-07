@@ -22,14 +22,14 @@ var safeParse = function(str) {
   return output;
 };
 
-var cl = function(debug) {
-  if (!(this instanceof cl)) return new cl(debug);
+var mon = function(debug) {
+  if (!(this instanceof mon)) return new mon(debug);
   this.debug = debug;
   this.history = [];
   return this;
 };
 
-cl.prototype.log = function() {
+mon.prototype.log = function() {
   var cp = Array.prototype.slice.call(arguments);
   this.history.push(cp);
   if (this.debug) {
@@ -43,6 +43,6 @@ cl.prototype.log = function() {
 
 module.exports = {
   attr: attr,
-  cl: cl,
+  mon: mon,
   safeParse: safeParse
 };
