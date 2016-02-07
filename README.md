@@ -41,22 +41,24 @@ All events are passed with **two** parameters:
 - `state` - is an internally built object to use for tracking/analytics/debugging for example:
 ```json
 {
-    "currentTime": 645,
+    "currentTime": 638,
     "duration": 1343,
     "event": "stateChange",
     "id": "M7lc1UVf-VE",
     "title": "YouTube Developers Live: Embedded Web Player Customization",
     "state": "paused",
-    "ms": 1454847726272
+    "muted": false,
+    "ms": 1454850080538
 },
 {
-    "currentTime": 644,
+    "currentTime": 637,
     "duration": 1343,
     "event": "stateChange",
     "id": "M7lc1UVf-VE",
     "title": "YouTube Developers Live: Embedded Web Player Customization",
     "state": "playing",
-    "ms": 1454847725015
+    "muted": false,
+    "ms": 1454850079068
 }
 ```
 

@@ -1,6 +1,6 @@
 {
   "name": "youtube-iframe-analytics",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "youtube stats tracking from the iframe_api, with events",
   "main": "src/index.js",
   "directories": {
