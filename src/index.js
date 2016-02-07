@@ -229,8 +229,7 @@ videoAnalytics.on = function(events, id, fn) {
     recurse = events.length ? true : false;
     event = events.shift();
   }
-  // accepts `*` wildcards as allowing attaching
-  // a specific event to all videos
+  // `*` wildcard allows you to attach an event to every vid
   if (id === '*') {
     var vids = Object.keys(priv.videos);
     for(var i=0;i<vids.length;++i) {
@@ -257,7 +256,7 @@ videoAnalytics.track = function() {
 // debug mode, allows you to capture debug data simply
 videoAnalytics.setDebug = function(bool) {
   var elem = document.querySelector('[data-yt-debug]');
-  bool = typeof bool != 'undefined' ? bool : null;
+  bool = typeof bool === 'boolean' ? bool : null;
   if (elem) {
     var attrs = attr(elem);
     videoAnalytics.debug = attrs('data-yt-debug') == 'true';
