@@ -19,7 +19,6 @@ gulp.task('build', ['scripts'], function() {
   return gulp.src('examples/js/videoAnalytics.js')
   .pipe(uglify())
   .pipe(rename('./videoAnalytics.min.js'))
-  .pipe(gulp.dest('./examples/js'))
   .pipe(gulp.dest('./build'));
 });
 
