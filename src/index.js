@@ -240,8 +240,7 @@ priv.events.stateChange = function(e) {
 videoAnalytics.on = function(events, id, fn) {
   var recurse = false, ev = events;
   if (events instanceof Array) {
-    recurse = events.length > 0;
-    ev = events.shift();
+    recurse = events.length > 0, ev = events.shift();
   }
   // `*` wildcard allows you to attach an event to every vid
   if (id === '*') {
