@@ -203,7 +203,7 @@ priv.injectScripts = function(fn) {
       priv.scriptInclude.addEventListener('load', fn, false);
     }
 
-    priv.scriptInclude.setAttribute('src', 'http://www.youtube.com/iframe_api');
+    priv.scriptInclude.setAttribute('src', '//www.youtube.com/iframe_api');
     placement.parentNode.insertBefore(priv.scriptInclude, placement);
   }
 };
