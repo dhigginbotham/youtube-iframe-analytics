@@ -177,9 +177,9 @@ priv.events.apiChange = function(e) {
 // represent the state string that is indicative
 // of the error
 priv.events.error = function(e) {
-  var state = 'invalid videoId';
+  var state = 'unrecognized error';
   if (e.data == 2 || e.data == 100) {
-    // basically nothing, as these are defaults
+    state = 'invalid videoId';
   } else if (e.data == 5) {
     state = 'html5 player error';
   } else if (e.data == 101 || e.data == 150) {
@@ -203,7 +203,7 @@ priv.events.ready = function(e) {
 // we transform the current state `id` to a human readable
 // string based on the youtube api docs
 priv.events.stateChange = function(e) {
-  var state = 'unstarted';
+  var state = 'initializing';
   if (e.data === YT.PlayerState.BUFFERING) {
     state = 'buffering';
   } else if (e.data === YT.PlayerState.CUED) {
@@ -214,6 +214,8 @@ priv.events.stateChange = function(e) {
     state = 'paused';
   } else if (e.data === YT.PlayerState.PLAYING) {
     state = 'playing';
+  } else if (e.data === YT.PlayerState.UNSTARTED) {
+    state = 'unstarted';
   }
   priv.processEvents('stateChange', e.target._id, state, e);
 };
