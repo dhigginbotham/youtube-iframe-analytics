@@ -40,12 +40,8 @@
       }
 
       function init() {
-        videoAnalytics
-          .on(['ready','stateChange','error'], '*', createDomElement)
-          // .on('stateChange', '*', createDomElement)
-          // .on('error', '*', createDomElement);
+        videoAnalytics.on(['ready','stateChange','error'], '*', createDomElement);
       }
-
       document.addEventListener('DOMContentLoaded', init, false);
 
     </script>
