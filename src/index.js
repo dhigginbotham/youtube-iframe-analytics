@@ -32,10 +32,10 @@ priv.init = function() {
 // attaches events to videos so they can be processed by 
 // the .on() fn
 priv.attachEvents = function(id, event, fn) {
-  if (priv.videos[id]) {
-    if (!(priv.videos[id].events[event] instanceof Array)) priv.videos[id].events[event] = [];
-    priv.videos[id].events[event].push(fn);
-  }
+  if (!priv.videos[id]) priv.videos[id] = {};
+  if (!priv.videos[id].events) priv.videos[id].events = {};
+  if (!(priv.videos[id].events[event] instanceof Array)) priv.videos[id].events[event] = [];
+  priv.videos[id].events[event].push(fn);
 };
 
 // the way the iframe_api works is by replacing an element
@@ -158,8 +158,13 @@ priv.referenceObject = function(el) {
       onApiChange: priv.events.apiChange
     };
     
-    // build video object to store
-    priv.videos[opts.videoId] = { opts: opts, el: el, events: {} };
+    // build video object to store if we need to
+    if (!priv.videos.hasOwnProperty(opts.videoId)) {
+      priv.videos[opts.videoId] = {};
+    }
+    
+    priv.videos[opts.videoId].opts = opts;
+    priv.videos[opts.videoId].el = el;
     priv.queue.push(priv.videos[opts.videoId]);
   }
 };
@@ -241,6 +246,7 @@ videoAnalytics.on = function(events, id, fn) {
   // `*` wildcard allows you to attach an event to every vid
   if (id === '*') {
     var vids = Object.keys(priv.videos);
+    if (!vids.length) return videoAnalytics;
     for(var i=0;i<vids.length;++i) {
       priv.attachEvents(vids[i],ev,fn);
     }
