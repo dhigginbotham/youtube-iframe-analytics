@@ -27,6 +27,14 @@
   *zoom: 1;
 }
 
+.pr {
+  float: right;
+}
+
+.pl {
+  float: left;
+}
+
 body {
   background: #fff;
   margin: 0; padding: 0;
