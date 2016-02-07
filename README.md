@@ -7,7 +7,21 @@ Uses browserify, so `npm i`, no jquery, expects you're on a *modernish* browser 
 
 ### API
 - `.on('event','videoId',fn)` - you can pass in `*` as the `videoId` to attach an event to all videos
+  ```js
+  // attach a stateChange event to a specific video
+  videoAnalytics.on('stateChange', 'M7lc1UVf-VE', function(e, state) {
+    console.log(e, state);
+  });
+  
+  // handle all video errors the same way
+  videoAnalytics.on('error', '*', function(e, state) {
+    console.log(e, state);
+  });
+  ```
 - `.track()` - you can trigger dom collection and initialization for latent loaded dom elements or binding changes, etc
+  ```js
+  videoAnalytics.track();
+  ```
 
 ----
 
@@ -51,22 +65,22 @@ Here's a link to or [**fiddle**](https://fiddle.jshell.net/dhiggy/egas87om/show/
 
 #####Markup:
 ```html
-  <script src="pathof.js"></script>
-  <div data-yt-analytics="eWxGdmLU4Nk" data-yt-height="400" data-yt-width="600" data-yt-title="tracking name...?"></div>
+<script src="pathof.js"></script>
+<div data-yt-analytics="eWxGdmLU4Nk" data-yt-height="400" data-yt-width="600" data-yt-title="tracking name...?"></div>
 ```
 #####JavaScript:
 ```js
-  function init() {
-    videoAnalytics.on('ready', '*', function(e, state) {
-      console.log(e, state);
-    }).on('stateChange', '*', function(e, state) {
-      console.log(e, state);
-    }).on('error', '*', function(e, state) {
-      console.log(e, state);
-    });
-  }
+function init() {
+  videoAnalytics.on('ready', '*', function(e, state) {
+    console.log(e, state);
+  }).on('stateChange', '*', function(e, state) {
+    console.log(e, state);
+  }).on('error', '*', function(e, state) {
+    console.log(e, state);
+  });
+}
 
-  document.addEventListener('DOMContentLoaded', init, false);
+document.addEventListener('DOMContentLoaded', init, false);
 ```
 
 ----
