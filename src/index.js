@@ -98,21 +98,29 @@ priv.setupEvents = function() {
 priv.processEvents = function(key, id, state, e) {
   // console.log('key %s id %s state %s', key, id, state);
   if (priv.videos[id].events[key]) {
-    var events = priv.videos[id].events[key];
-    var player = priv.videos[id].player;
-    var title = priv.videos[id].opts.title == id ? player.getVideoData().title : priv.videos[id].opts.title;  
-    var processor = function(next) {
-      return next(e, {
+    var events = priv.videos[id].events[key],
+        player = priv.videos[id].player;
+    // title will fallback to the id, so we can detect when
+    // we can call on the youtube api to get the video title
+    // this will allow us to have human readable titles, 
+    // without the overhead
+    if (priv.videos[id].opts.title == id) {
+      // we don't want to accept any undefined video titles,
+      // so we'll gracefully fallback to our id, this really
+      // only happens when we are in a video error state
+      priv.videos[id].opts.title = player.getVideoData().title ? player.getVideoData().title : id;
+    }
+    for(var i=0;i<events.length;++i) {
+      events[i](e, {
         currentTime: player.getCurrentTime(), 
         duration: player.getDuration(),
         event: key,
         id: id,
-        title: title,
+        title: priv.videos[id].opts.title,
         state: state,
         ms: new Date().getTime()
       });
-    };
-    events.forEach(processor);
+    }
   }
 };
 
