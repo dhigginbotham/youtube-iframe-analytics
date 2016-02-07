@@ -147,26 +147,21 @@ priv.referenceObject = function(el) {
     opts.playerVars = attrs('data-yt-vars') ? safeParse(attrs('data-yt-vars')) : null;
     opts.title = attrs('data-yt-title') ? attrs('data-yt-title') : opts.videoId;
     
-    // setup base events
-    opts.events = priv.setupEvents();
+    // setup videos events, all are available publically, more info can be 
+    // found at developers.google.com/youtube/iframe_api_reference#Events
+    opts.events = {
+      onReady: priv.events.ready,
+      onStateChange: priv.events.stateChange,
+      onError: priv.events.error,
+      onPlaybackQualityChange: priv.events.playbackQualityChange,
+      onPlaybackRateChange: priv.events.playbackRateChange,
+      onApiChange: priv.events.apiChange
+    };
     
     // build video object to store
     priv.videos[opts.videoId] = { opts: opts, el: el, events: {} };
     priv.queue.push(priv.videos[opts.videoId]);
   }
-};
-
-// setup videos events, all are available publically, more info can be 
-// found at developers.google.com/youtube/iframe_api_reference#Events
-priv.setupEvents = function() {
-  var events = {};
-  events.onReady = priv.events.ready;
-  events.onStateChange = priv.events.stateChange;
-  events.onError = priv.events.error;
-  events.onPlaybackQualityChange = priv.events.playbackQualityChange;
-  events.onPlaybackRateChange = priv.events.playbackRateChange;
-  events.onApiChange = priv.events.apiChange;
-  return events;
 };
 
 // the iframe_api allows us to attach dom style events to
