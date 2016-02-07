@@ -24,24 +24,23 @@ All events are passed with two parameters:
 - `event` - is the event object passed from the youtube event, it will remain **unmodified**
 - `state` - is an internally built object to use for tracking/analytics/debugging for example:
 ```json
-// example output of a state object on `stateChange` event
 {
-    "currentTime": 638.612874,
-    "duration": 1343.641,
+    "currentTime": 645,
+    "duration": 1343,
     "event": "stateChange",
     "id": "M7lc1UVf-VE",
     "title": "YouTube Developers Live: Embedded Web Player Customization",
     "state": "paused",
-    "ms": 1454846039769
+    "ms": 1454847726272
 },
 {
-    "currentTime": 637,
-    "duration": 1343.641,
+    "currentTime": 644,
+    "duration": 1343,
     "event": "stateChange",
     "id": "M7lc1UVf-VE",
     "title": "YouTube Developers Live: Embedded Web Player Customization",
     "state": "playing",
-    "ms": 1454846037978
+    "ms": 1454847725015
 }
 ```
 

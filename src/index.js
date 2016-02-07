@@ -112,8 +112,8 @@ priv.processEvents = function(key, id, state, e) {
     }
     for(var i=0;i<events.length;++i) {
       events[i](e, {
-        currentTime: player.getCurrentTime(), 
-        duration: player.getDuration(),
+        currentTime: Math.floor(player.getCurrentTime()), 
+        duration: Math.floor(player.getDuration()),
         event: key,
         id: id,
         title: priv.videos[id].opts.title,
