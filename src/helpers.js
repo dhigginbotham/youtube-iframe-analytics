@@ -17,7 +17,7 @@ exports.attr = function attr(elem) {
 exports.stringifySafe = function stringifySafe(str) {
   var output = null;
   try {
-    output = JSON.stringify(str);
+    output = JSON.parse(str);
   } catch (ex) {}
   return output;
 };

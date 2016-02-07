@@ -84,7 +84,7 @@ priv.injectScripts = function(fn) {
 // we want to standardize how we handle events, this is the
 // fn that handles such things
 priv.processEvents = function(key, id, state, e) {
-  // console.log('key %s id %s state %s', key, id, state);
+  console.log('key %s id %s state %s', key, id, state);
   if (priv.videos[id].events[key]) {
     var events = priv.videos[id].events[key],
         player = priv.videos[id].player;
