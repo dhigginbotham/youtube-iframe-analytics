@@ -11,6 +11,7 @@ Uses browserify, so `npm i`, no jquery, expects you're on a *modernish* browser 
   - `videoId` supports wildcards `*` to attach an event to all videos
   - `fn` standard callback fn, will be passed back **two** params: `event`, `state`
   
+  ######.on() examples
   ```js
   // attach a stateChange event to a specific video
   videoAnalytics.on('stateChange', 'M7lc1UVf-VE', function(e, state) {
@@ -30,17 +31,20 @@ Uses browserify, so `npm i`, no jquery, expects you're on a *modernish* browser 
   ```
 - `.setDebug(boolean)` - you can programmatically set debug mode, you will then have access to `.logs` array which has a history of all debug logging within that state.
   
+  ######.setDebug() examples
   ```js
   videoAnalytics.setDebug(true);
   console.log(videoAnalytics.logs) // [..., logs]
   ```
 - `.track()` - you can trigger dom collection and initialization for latent loaded dom elements or binding changes, etc
   
+  ######.track() examples
   ```js
   videoAnalytics.track();
   ```
 - `.videos` - returns object of videos on the dom for interaction with external api's
 
+  ######.videos examples
   ```js
   videoAnalytics.videos;
   ```
