@@ -49,7 +49,7 @@ a:active {
 
 .container {
   width: 90%;
-  margin: 0 auto;
+  margin: 20px auto;
   display: block;
   padding: 0 1%;
 }
