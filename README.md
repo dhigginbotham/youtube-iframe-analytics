@@ -93,8 +93,12 @@ All events are passed with **two** parameters:
 
 #####Markup:
 ```html
-<script src="pathof.js"></script>
-<div data-yt-analytics="eWxGdmLU4Nk" data-yt-height="400" data-yt-width="600" data-yt-title="tracking name...?"></div>
+<script src="/path/to/videoAnalytics.min.js"></script>
+<div data-yt-analytics='O1YP8QP9gLA' data-yt-width='300' data-yt-height='200' data-yt-vars='{"fs": 1, "autoplay": 1}'></div>
+<div data-yt-analytics='z8UgDZ4rXBU' data-yt-width='300' data-yt-height='200' data-yt-title='Netflix does cool stuff with node.js!'></div>
+<div data-yt-analytics='DqMFX91ToLw' data-yt-width='300' data-yt-height='200'></div>
+<div data-yt-analytics='FAZJsxcykPs' data-yt-width='300' data-yt-height='200'></div>
+<div data-yt-analytics='z-yU0sVdKTo' data-yt-width='300' data-yt-height='200'></div>
 ```
 
 ######Markup Options:
