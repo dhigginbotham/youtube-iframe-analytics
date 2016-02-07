@@ -4,9 +4,27 @@ I had a need to get at the events fired from [YouTubes JS IFRAME_API](https://de
 Uses browserify, so `npm i`, no dependencies, other than IE9+ish, go nuts.
 
 ### Usage
+DOM:
 ```html
   <script src="pathof.js"></script>
   <div data-yt-analytics="eWxGdmLU4Nk" data-yt-height="400" data-yt-width="600" data-yt-title="tracking name...?"></div>
+```
+JS:
+```js
+  function init() {
+    videoAnalytics.on('ready', '*', function(e, state) {
+      console.log('ready');
+      console.log(state, e);
+    }).on('stateChange', '*', function(e, state) {
+      console.log('state change');
+      console.log(state, e);
+    }).on('error', '*', function(e, state) {
+      console.log('error');
+      console.log(state, e);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', init, false);
 ```
 
 ### API
