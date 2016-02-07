@@ -63,7 +63,7 @@ All events are passed with **two** parameters:
 ----
 
 ### Usage
-Here's a link to or [**fiddle**](https://fiddle.jshell.net/dhiggy/egas87om/show/).
+Here's a link to [**fiddle**](https://fiddle.jshell.net/dhiggy/egas87om/show/).
 
 #####Markup:
 ```html
