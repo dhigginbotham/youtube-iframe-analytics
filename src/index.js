@@ -105,6 +105,7 @@ priv.processEvents = function(key, id, state, e) {
         currentTime: player.getCurrentTime(), 
         duration: player.getDuration(),
         event: key,
+        id: id,
         state: state,
         ms: new Date().getTime()
       });
