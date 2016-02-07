@@ -14,7 +14,7 @@ var attr = function(elem) {
   }
 }
 
-var stringifySafe = function(str) {
+var safeParse = function(str) {
   var output = null;
   try {
     output = JSON.parse(str);
@@ -44,5 +44,5 @@ cl.prototype.log = function() {
 module.exports = {
   attr: attr,
   cl: cl,
-  stringifySafe: stringifySafe
+  safeParse: safeParse
 };

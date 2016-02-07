@@ -8,9 +8,15 @@ gulp.task('scripts', function() {
   return gulp.src('src/index.js')
   .pipe(browserify({
     insertGlobals : false,
-    debug : false,
+    debug : true,
     standalone: 'videoAnalytics'
   }))
+  .pipe(rename('./videoAnalytics.js'))
+  .pipe(gulp.dest('./examples/js'));
+});
+ 
+gulp.task('build', ['scripts'], function() {
+  return gulp.src('examples/js/videoAnalytics.js')
   .pipe(uglify())
   .pipe(rename('./videoAnalytics.min.js'))
   .pipe(gulp.dest('./examples/js'))
@@ -23,7 +29,7 @@ gulp.task('ghpages', function() {
 });
 
 gulp.task('watch', function() {
-  gulp.watch(['./src/**/*','./examples/**/*'], ['scripts']);
+  gulp.watch(['./src/**/*','./examples/**/*'], ['build']);
 });
 
-gulp.task('default', ['scripts', 'watch']);
+gulp.task('default', ['build', 'watch']);

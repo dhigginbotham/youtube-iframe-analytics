@@ -89,6 +89,16 @@ priv.injectScripts = function(fn) {
 priv.processEvents = function(key, id, state, e) {
   var events = priv.videos[id].events[key],
       player = priv.videos[id].player;
+  var eventState = {
+    currentTime: Math.floor(player.getCurrentTime()), 
+    duration: Math.floor(player.getDuration()),
+    event: key,
+    id: id,
+    title: priv.videos[id].opts.title,
+    state: state,
+    muted: player.isMuted(),
+    ms: new Date().getTime()
+  };
   // if we get at our videos externally, we will likely
   // want to know whatever the state of the current video
   // is in
@@ -103,22 +113,13 @@ priv.processEvents = function(key, id, state, e) {
     // only happens when we are in a video error state
     priv.videos[id].opts.title = player.getVideoData().title ? player.getVideoData().title : id;
   }
-  var eventState = {
-    currentTime: Math.floor(player.getCurrentTime()), 
-    duration: Math.floor(player.getDuration()),
-    event: key,
-    id: id,
-    title: priv.videos[id].opts.title,
-    state: state,
-    muted: player.isMuted(),
-    ms: new Date().getTime()
-  };
   if (priv.videos[id].events[key]) {
     for(var i=0;i<events.length;++i) {
       events[i](e, eventState);
     }
   }
   cl.log(eventState);
+  
 };
 
 // sets up our dom object, so we have a strict schema to 
