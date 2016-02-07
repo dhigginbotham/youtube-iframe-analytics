@@ -7,6 +7,15 @@ Uses browserify, so `npm i`, no jquery, expects you're on a modernish browser (I
 - `.on('event','videoId',fn)` - you can pass in `*` as the videoId to attach an event to all videos
 - `.track()` - you can trigger dom collection and initialization for latent loaded dom elements or binding changes, etc
 
+### Events
+You can find out more about why/when these fire [here](https://developers.google.com/youtube/iframe_api_reference#Events)
+- `apiChange`
+- `error`
+- `playbackRateChange`
+- `playbackQualityChange`
+- `ready`
+- `stateChange`
+
 ### Usage
 DOM:
 ```html
