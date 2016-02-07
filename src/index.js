@@ -46,7 +46,7 @@ priv.attachVideos = function() {
 priv.attachVideosInternal = function() {
   priv.loaded = true;
   priv.attachVideos();
-}
+};
 
 // we'll run this on init, or on demand for latent loaded
 // html fragments
