@@ -1,5 +1,5 @@
 var helpers = require('./helpers');
-var attr = helpers.attr, stringifySafe = helpers.stringifySafe;
+var attr = helpers.attr, stringifySafe = helpers.stringifySafe, cl = helpers.cl;
 
 // api objects
 var videoAnalytics = {}, priv = {};
@@ -44,6 +44,9 @@ priv.attachVideos = function() {
 // we'll run this on init, or on demand for latent loaded
 // html fragments
 priv.collectDom = function() {
+  // we want to set debug state fairly early, so we'll do
+  // it before we actually query for any videos to setup
+  videoAnalytics.setDebug();
   var dom = document.querySelectorAll('[data-yt-analytics]');
   for(var i=0;i<dom.length;++i) {
     priv.referenceObject(dom[i]);
@@ -84,10 +87,19 @@ priv.injectScripts = function(fn) {
 // we want to standardize how we handle events, this is the
 // fn that handles such things
 priv.processEvents = function(key, id, state, e) {
-  console.log('key %s id %s state %s', key, id, state);
+  var events = priv.videos[id].events[key],
+      player = priv.videos[id].player;
+  var eventState = {
+    currentTime: Math.floor(player.getCurrentTime()), 
+    duration: Math.floor(player.getDuration()),
+    event: key,
+    id: id,
+    title: priv.videos[id].opts.title,
+    state: state,
+    muted: player.isMuted(),
+    ms: new Date().getTime()
+  };
   if (priv.videos[id].events[key]) {
-    var events = priv.videos[id].events[key],
-        player = priv.videos[id].player;
     // if we get at our videos externally, we will likely
     // want to know whatever the state of the current video
     // is in
@@ -103,18 +115,10 @@ priv.processEvents = function(key, id, state, e) {
       priv.videos[id].opts.title = player.getVideoData().title ? player.getVideoData().title : id;
     }
     for(var i=0;i<events.length;++i) {
-      events[i](e, {
-        currentTime: Math.floor(player.getCurrentTime()), 
-        duration: Math.floor(player.getDuration()),
-        event: key,
-        id: id,
-        title: priv.videos[id].opts.title,
-        state: state,
-        muted: player.isMuted(),
-        ms: new Date().getTime()
-      });
+      events[i](e, eventState);
     }
   }
+  cl.log(eventState);
 };
 
 // sets up our dom object, so we have a strict schema to 
@@ -233,6 +237,19 @@ videoAnalytics.track = function() {
   if (priv.queue.length) {
     priv.injectScripts();
     priv.attachVideos();
+  }
+  return videoAnalytics;
+};
+
+// debug mode, allows you to capture debug data simply
+videoAnalytics.setDebug = function(bool) {
+  var elem = document.querySelector('[data-yt-analytics-debug]');
+  bool = typeof bool != 'undefined' ? bool : null; 
+  if (elem) {
+    var attrs = attr(elem);
+    var debug = videoAnalytics.isDebug = bool ? bool : attrs('data-yt-analytics-debug') == 'true';
+    cl = cl(debug);
+    if (debug) videoAnalytics.logs = cl.history;
   }
   return videoAnalytics;
 };
