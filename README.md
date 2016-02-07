@@ -6,7 +6,10 @@ Uses browserify, so `npm i`, no jquery, expects you're on a *modernish* browser 
 ----
 
 ### API
-- `.on('event','videoId',fn)` - you can pass in `*` as the `videoId` to attach an event to all videos
+- `.on('event','videoId',fn)` 
+  - `event` can either be a string event name or an array of event names
+  - `videoId` supports wildcards `*` to attach an event to all videos
+  - `fn` standard callback fn, will be passed back **two** params: `event`, `state`
   
   ```js
   // attach a stateChange event to a specific video
