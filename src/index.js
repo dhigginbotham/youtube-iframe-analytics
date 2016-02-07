@@ -2,31 +2,16 @@ var helpers = require('./helpers');
 var attr = helpers.attr;
 
 // api objects
-var pub = {}, priv = {};
-
-// we want to keep context of our dom, so we can easily ref
-// the nodes later on
-priv.videos = {};
-
-// each dom node will have events attached so we can easily
-// interact with them, we'll do some data-binding to collect
-// our nodes
-priv.events = {};
-  
-// videos queue, because we load a 3rd party asset we want
-// to mitigate race conditions of YT not being ready, so
-// we keep all untracked videos in this queue and shift 
-// them out as we get to them
-priv.queue = [];
+var videoAnalytics = {}, priv = {};
 
 // init fn that happens on DOMContentLoaded
-pub.init = function() {
+videoAnalytics.init = function() {
   priv.collectDom();
   if (priv.queue.length) priv.injectScripts();
 };
 
 // public on event, so you can externally attach to videos
-pub.on = function(event, id, fn) {
+videoAnalytics.on = function(event, id, fn) {
   var processor = function(next) {
     if (priv.videos[next]) {
       if (!(priv.videos[next].events[event] instanceof Array)) priv.videos[next].events[event] = [];
@@ -40,13 +25,13 @@ pub.on = function(event, id, fn) {
   } else {
     processor(id);
   }
-  return pub;
+  return videoAnalytics;
 };
 
 // the way the iframe_api works is by replacing an element
 // with an iframe, so we'll want to attach the video as 
 // needed
-pub.attachVideos = function() {
+videoAnalytics.attachVideos = function() {
   var video;
   while(video = priv.queue.shift()) {
     video.player = new YT.Player(video.el, video.opts);
@@ -62,6 +47,21 @@ priv.collectDom = function() {
     priv.referenceObject(dom[i]);
   }
 };
+
+// we want to keep context of our dom, so we can easily ref
+// the nodes later on
+priv.videos = {};
+
+// each dom node will have events attached so we can easily
+// interact with them, we'll do some data-binding to collect
+// our nodes
+priv.events = {};
+  
+// videos queue, because we load a 3rd party asset we want
+// to mitigate race conditions of YT not being ready, so
+// we keep all untracked videos in this queue and shift 
+// them out as we get to them
+priv.queue = [];
 
 // sets up our dom object, so we have a strict schema to 
 // adhere to later on in the api 
@@ -86,44 +86,77 @@ priv.referenceObject = function(el) {
   }
 };
 
-// this is hack for now, will change/expose this externally
-// so we know what is happening
+// setup videos events, all are available publically, more info can be 
+// found at developers.google.com/youtube/iframe_api_reference#Events
 priv.setupEvents = function() {
   var events = {};
   events.onReady = priv.events.ready;
   events.onStateChange = priv.events.stateChange;
   events.onError = priv.events.error;
+  events.onPlaybackQualityChange = priv.events.playbackQualityChange;
+  events.onPlaybackRateChange = priv.events.playbackRateChange;
+  events.onApiChange = priv.events.apiChange;
   return events;
 };
 
 // we want to standardize how we handle events, this is the
 // fn that handles such things
 priv.processEvents = function(key, id, state, e) {
-  console.log('key %s id %s state %s', key, id, state);
+  // console.log('key %s id %s state %s', key, id, state);
   if (priv.videos[id].events[key]) {
     var events = priv.videos[id].events[key];
     var player = priv.videos[id].player;
-    return events.forEach(function(event) {
-      return event(e, {
+    var processor = function(next) {
+      return next(e, {
         state: state, 
         currentTime: player.getCurrentTime(), 
-        duration: player.getDuration(), 
+        duration: player.getDuration(),
         ms: new Date().getTime()
       });
-    });
+    };
+    events.forEach(processor);
   }
 };
 
 // the iframe_api allows us to attach dom style events to
 // videos, we always fire these internally, but then we 
 // also allow you to attach events to a video, by its id
+// --------------------------------------------------------
+//
 
-// default ready state event
-priv.events.ready = function(e) {
-  return priv.processEvents('ready', e.target._id, 'ready', e);
+priv.events.apiChange = function(e) {
+  priv.processEvents('apiChange', e.target._id, 'apiChange', e);
 };
 
-// default state change event
+// according to youtube docs these status codes
+// represent the state string that is indicative
+// of the error
+priv.events.error = function(e) {
+  var state = 'invalid videoId';
+  if (e.data == 2 || e.data == 100) {
+    // basically nothing, as these are defaults
+  } else if (e.data == 5) {
+    state = 'html5 player error';
+  } else if (e.data == 101 || e.data == 150) {
+    state = 'embedding forbidden';
+  }
+  priv.processEvents('error', e.target._id, state, e);
+};
+
+priv.events.playbackRateChange = function(e) {
+  priv.processEvents('playbackRateChange', e.target._id, 'playbackRateChange', e);
+};
+
+priv.events.playbackQualityChange = function(e) {
+  priv.processEvents('playbackQualityChange', e.target._id, 'playbackQualityChange', e);
+};
+
+priv.events.ready = function(e) {
+  priv.processEvents('ready', e.target._id, 'ready', e);
+};
+
+// we transform the current state `id` to a human readable
+// string based on the youtube api docs
 priv.events.stateChange = function(e) {
   var state = 'unstarted';
   if (e.data === YT.PlayerState.BUFFERING) {
@@ -137,19 +170,7 @@ priv.events.stateChange = function(e) {
   } else if (e.data === YT.PlayerState.PLAYING) {
     state = 'playing';
   }
-  return priv.processEvents('stateChange', e.target._id, state, e);
-};
-
-priv.events.error = function(e) {
-  var state = 'invalid videoId';
-  if (e.data == 2 || e.data == 100) {
-    // basically nothing, as these are defaults
-  } else if (e.data == 5) {
-    state = 'html5 player error';
-  } else if (e.data == 101 || e.data == 150) {
-    state = 'embedding forbidden';
-  }
-  return priv.processEvents('error', e.target._id, state, e);
+  priv.processEvents('stateChange', e.target._id, state, e);
 };
 
 // we include youtubes js script async, and we'll need to 
@@ -159,7 +180,7 @@ priv.injectScripts = function(fn) {
     // we only want to do this once, and this is the best
     // time to do this once, this also keeps all of the
     // conditional stuff to a single entry, so it works
-    window['onYouTubeIframeAPIReady'] = pub.attachVideos;
+    window['onYouTubeIframeAPIReady'] = videoAnalytics.attachVideos;
 
     var placement = document.getElementsByTagName('script')[0];
     priv.scriptInclude = document.createElement('script');
@@ -175,6 +196,6 @@ priv.injectScripts = function(fn) {
   }
 };
   
-document.addEventListener('DOMContentLoaded', pub.init, false);
+document.addEventListener('DOMContentLoaded', videoAnalytics.init, false);
 
-module.exports = pub;
+module.exports = videoAnalytics;
