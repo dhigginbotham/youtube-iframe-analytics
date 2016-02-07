@@ -2,11 +2,13 @@
 I had a need to get at the events fired from [YouTubes JS iframe](https://developers.google.com/youtube/iframe_api_reference) so that I could send them off to analytics -- but I wanted that output of data to be fairly agnostic to whichever analytics provider I might be using. So instead of making a lot of assumptions about where this data goes to, just attach onto an event and you've got data to send over to SiteCatalyst/Custom/etc.
 
 Uses browserify, so `npm i`, no jquery, expects you're on a modernish browser (IE9 and up).
+
 ----
 
 ### API
 - `.on('event','videoId',fn)` - you can pass in `*` as the videoId to attach an event to all videos
 - `.track()` - you can trigger dom collection and initialization for latent loaded dom elements or binding changes, etc
+
 ----
 
 ### Events
@@ -42,6 +44,7 @@ All events are passed with two parameters:
     "ms": 1454846037978
 }
 ```
+
 ----
 
 ### Usage
@@ -66,6 +69,7 @@ JavaScript:
 
   document.addEventListener('DOMContentLoaded', init, false);
 ```
+
 ----
 
 ###License
