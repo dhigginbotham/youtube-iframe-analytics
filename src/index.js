@@ -32,12 +32,12 @@ priv.init = function() {
 // the way the iframe_api works is by replacing an element
 // with an iframe, so we'll want to attach the video as 
 // needed
-priv.attachVideos = function() {
+priv.attachVideos = function(queue) {
   if (priv.loaded) {
-    var video;
-    while(video = priv.queue.shift()) {
-      video.player = new YT.Player(video.el, video.opts);
-      video.player._id = video.opts.videoId;
+    var next;
+    while(next = queue.shift()) {
+      next.player = new YT.Player(next.el, next.opts);
+      next.player._id = next.opts.videoId;
     }
   }
 };
@@ -59,7 +59,7 @@ priv.collectDom = function() {
 // without race conditions
 priv.externalApiReady = function() {
   priv.loaded = true;
-  priv.attachVideos();
+  priv.attachVideos(priv.queue);
 };
 
 // we include youtubes js script async, and we'll need to 
@@ -237,7 +237,7 @@ videoAnalytics.track = function() {
   priv.collectDom();
   if (priv.queue.length) {
     priv.injectScripts();
-    priv.attachVideos();
+    priv.attachVideos(priv.queue);
   }
   return videoAnalytics;
 };
