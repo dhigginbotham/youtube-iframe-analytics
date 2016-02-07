@@ -29,6 +29,15 @@ priv.init = function() {
   if (priv.queue.length) priv.injectScripts();
 };
 
+// attaches events to videos so they can be processed by 
+// the .on() fn
+priv.attachEvents = function(id, event, fn) {
+  if (priv.videos[id]) {
+    if (!(priv.videos[id].events[event] instanceof Array)) priv.videos[id].events[event] = [];
+    priv.videos[id].events[event].push(fn);
+  }
+};
+
 // the way the iframe_api works is by replacing an element
 // with an iframe, so we'll want to attach the video as 
 // needed
@@ -44,7 +53,7 @@ priv.attachVideos = function(queue) {
 
 // we'll run this on init, or on demand for latent loaded
 // html fragments
-priv.collectDom = function() {
+priv.collectDom = function(fn) {
   // we want to set debug state fairly early, so we'll do
   // it before we actually query for any videos to setup
   videoAnalytics.setDebug();
@@ -216,31 +225,26 @@ priv.events.stateChange = function(e) {
 };
 
 // public on event, so you can externally attach to videos
+// this fn can be recursive, so you know, be smart with this
+// try to avoid extremely large arrays, or doing async stuff
+// inside of your events without the proper safety materials
 videoAnalytics.on = function(events, id, fn) {
-  var recurse = false, event;
+  var recurse = false, event = events;
   if (events instanceof Array) {
     recurse = events.length ? true : false;
     event = events.shift();
-  } else {
-    event = events;
   }
-  var processor = function(next, ev) {
-    if (priv.videos[next]) {
-      if (!(priv.videos[next].events[ev] instanceof Array)) priv.videos[next].events[ev] = [];
-      priv.videos[next].events[ev].push(fn);
-    }
-  };
-  // accepts `*` as an identifier of a "global"
-  // event that should be attached to all videos
+  // accepts `*` wildcards as allowing attaching
+  // a specific event to all videos
   if (id === '*') {
     var vids = Object.keys(priv.videos);
     for(var i=0;i<vids.length;++i) {
-      processor(vids[i], event);
+      priv.attachEvents(vids[i],event,fn);
     }
   } else {
-    processor(id);
+    priv.attachEvents(id,event,fn);
   }
-  if (recurse) return videoAnalytics.on(events, id, fn);
+  if (recurse) return videoAnalytics.on(events,id,fn);
   return videoAnalytics;
 };
 
