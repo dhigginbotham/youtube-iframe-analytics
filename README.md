@@ -11,7 +11,7 @@ Uses browserify, so `npm i`, no jquery, expects you're on a *modernish* browser 
   - `videoId` supports wildcards `*` to attach an event to all videos
   - `fn` standard callback fn, will be passed back **two** params: `event`, `state`
   
-  ######.on() examples
+  ###### .on() examples
   ```js
   // attach a stateChange event to a specific video
   videoAnalytics.on('stateChange', 'M7lc1UVf-VE', function(e, state) {
@@ -31,20 +31,20 @@ Uses browserify, so `npm i`, no jquery, expects you're on a *modernish* browser 
   ```
 - `.setDebug(boolean)` - you can programmatically set debug mode, you will then have access to `.logs` array which has a history of all debug logging within that state.
   
-  ######.setDebug() examples
+  ###### .setDebug() examples
   ```js
   videoAnalytics.setDebug(true);
   console.log(videoAnalytics.logs) // [..., logs]
   ```
 - `.track()` - you can trigger dom collection and initialization for latent loaded dom elements or binding changes, etc
   
-  ######.track() examples
+  ###### .track() examples
   ```js
   videoAnalytics.track();
   ```
 - `.videos` - returns object of videos on the dom for interaction with external api's
 
-  ######.videos examples
+  ###### .videos examples
   ```js
   videoAnalytics.videos;
   ```
@@ -91,7 +91,7 @@ All events are passed with **two** parameters:
 ### Usage
 [You can check out the demo](https://dhigginbotham.github.io/youtube-iframe-analytics/), if thats more your speed.
 
-#####Markup:
+##### Markup:
 ```html
 <script src='/path/to/videoAnalytics.min.js' data-yt-debug='true'></script>
 <div data-yt-analytics='O1YP8QP9gLA' data-yt-width='300' data-yt-height='200' data-yt-vars='{"fs": 1, "autoplay": 1}'></div>
@@ -101,7 +101,7 @@ All events are passed with **two** parameters:
 <div data-yt-analytics='z-yU0sVdKTo' data-yt-width='300' data-yt-height='200'></div>
 ```
 
-######Markup Options:
+###### Markup Options:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `[data-yt-analytics]` | `String` | **true** | `videoId` of YouTube video to embed |
@@ -112,7 +112,7 @@ All events are passed with **two** parameters:
 | `[data-yt-width]` | `Number` | **false** | `<iframe>` width, defaults to `640` |
 
 
-#####JavaScript:
+##### JavaScript:
 ```js
 // attaches events to ready, stateChange, and error for 
 // every video loaded on the page, gg
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', init, false);
 
 ----
 
-###License
+### License
 ```
 The MIT License (MIT)
 
